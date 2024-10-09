@@ -1,0 +1,50 @@
+/** @type {import('tailwindcss').Config} */
+export default {
+  content: [
+    "./components/**/*.{js,vue,ts}",
+    "./layouts/**/*.vue",
+    "./pages/**/*.vue",
+    "./plugins/**/*.{js,ts}",
+    "./app.vue",
+    "./error.vue",
+  ],
+  theme: {
+    extend: {
+      colors: {
+        primaryb: "var(--primary-color)",
+        secondary: "var(--secondary-color)",
+        accent: "var(--accent-color)",
+        background: "var(--background-color)",
+        text: "var(--text-color)",
+        highlight: "var(--highlight-color)",
+        customPrimary: {
+          50: "#F8F4EB",
+          100: "#F3EBDB",
+          200: "#E9DABD",
+          300: "#DFC99E",
+          400: "#D1B274",
+          500: "#C39A4A",
+          600: "#A07C35",
+          700: "#765B27",
+          800: "#4C3A19",
+          900: "#211A0B",
+          950: "#0C0A04",
+        },
+        brown: {
+          50: "#FDF6F3",
+          100: "#F7E6E1",
+          200: "#EED3C5",
+          300: "#DDB29B",
+          400: "#C69172",
+          500: "#A97254",
+          600: "#8A583D",
+          700: "#6D442F",
+          800: "#583726",
+          900: "#432B1E",
+          950: "#2F1E15",
+        },
+      },
+    },
+  },
+  plugins: [],
+};
