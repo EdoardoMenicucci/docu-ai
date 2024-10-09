@@ -1,28 +1,136 @@
-import dotenv from 'dotenv'
-dotenv.config()
+// import dotenv from 'dotenv'
+// dotenv.config()
 
+// import GithubProvider from 'next-auth/providers/github'
+// import DiscordProvider from "next-auth/providers/discord";
+// import { NuxtAuthHandler } from '#auth'
+
+// export default NuxtAuthHandler({
+//     pages: {
+//         // behavior login page
+//         signIn: '/login'
+//     },
+//     // A secret string you define, to ensure correct encryption
+//     secret: process.env.AUTH_SECRET,
+//     // Login and callback URLs
+//     providers: [
+//         // @ts-expect-error Use .default here for it to work during SSR.
+//         GithubProvider.default({
+//             clientId: process.env.GITHUB_CLIENT_ID,
+//             clientSecret: process.env.GITHUB_CLIENT_SECRET
+//         }),
+//         // TODO discord https
+//         // DiscordProvider.default({
+//         //     clientId: process.env.DISCORD_CLIENT_ID,
+//         //     clientSecret: process.env.DISCORD_CLIENT_SECRET
+//         // })
+//     ]
+// })
+interface User {
+    id?: string;
+    credits?: number;
+    email?: string;
+    name?: string;
+}
+
+interface Session {
+    user?: User;
+}
+
+interface Token {
+    sub?: string;
+}
+
+// Definisci un'interfaccia personalizzata per l'utente della sessione
+interface CustomSessionUser {
+    id: string;
+    email: string | null;
+    credits: number;
+    name?: string | null;
+    image?: string | null;
+}
+
+// Estendi il tipo di sessione per includere l'utente personalizzato
+declare module 'next-auth' {
+    interface Session {
+        user: CustomSessionUser;
+    }
+}
+
+// server/auth.config.ts
+import { NuxtAuthHandler } from '#auth';
 import GithubProvider from 'next-auth/providers/github'
-import DiscordProvider from "next-auth/providers/discord";
-import { NuxtAuthHandler } from '#auth'
+import CredentialsProvider from 'next-auth/providers/credentials';
+import { PrismaAdapter } from '@next-auth/prisma-adapter';
+import { PrismaClient } from '@prisma/client'
+import * as bcrypt from 'bcrypt';
+import prisma from '~/lib/prisma';
+
 
 export default NuxtAuthHandler({
-    pages: {
-        // behavior login page
-        signIn: '/login'
+    adapter: PrismaAdapter(prisma),
+    session: {
+        strategy: 'jwt',
+        maxAge: 30 * 24 * 60 * 60, // 30 giorni
+        updateAge: 24 * 60 * 60,    // 24 ore
     },
-    // A secret string you define, to ensure correct encryption
     secret: process.env.AUTH_SECRET,
-    // Login and callback URLs
     providers: [
-        // @ts-expect-error Use .default here for it to work during SSR.
+        // Provider OAuth con Google
         GithubProvider.default({
             clientId: process.env.GITHUB_CLIENT_ID,
             clientSecret: process.env.GITHUB_CLIENT_SECRET
         }),
-        // TODO discord https
-        // DiscordProvider.default({
-        //     clientId: process.env.DISCORD_CLIENT_ID,
-        //     clientSecret: process.env.DISCORD_CLIENT_SECRET
-        // })
-    ]
-})
+        // Provider di credenziali personalizzato
+        CredentialsProvider.default({
+            name: 'Credentials',
+            credentials: {
+                email: { label: 'Email', type: 'email' },
+                password: { label: 'Password', type: 'password' },
+            },
+            async authorize(credentials: { email: string; password: string }) {
+                if (!credentials?.email || !credentials.password) {
+                    throw new Error('Email e password sono richieste');
+                }
+
+                const user = await prisma.user.findUnique({
+                    where: { email: credentials.email },
+                });
+
+                if (!user) {
+                    throw new Error('Credenziali non valide');
+                }
+
+                const isValid = await bcrypt.compare(credentials.password, user.password);
+
+                if (!isValid) {
+                    throw new Error('Credenziali non valide');
+                }
+
+                return { id: user.id, email: user.email, credits: user.credits };
+            },
+        }),
+    ],
+    callbacks: {
+        async jwt({ token, user }) {
+            //Aggiungi le informazioni dell'utente al token
+            if (user) {
+                token.id = user.id;
+                token.name = user.name;
+                token.email = user.email;
+                token.credits = user.credits;
+            }
+            return token
+        },
+        async session({ session, token }) {
+            // Aggiungi le informazioni dal token alla sessione
+            if (token) {
+                session.user.id = token.id;
+                session.user.name = token.name;
+                session.user.credits = token.credits;// Aggiungi il campo credits
+                session.user.email = token.email ?? null;
+            }
+            return session
+        }
+    }
+});
