@@ -11,7 +11,9 @@
     --highlight-color: #F9E79F;
 }
 
-
+body{
+    min-height: 100vh;
+}
 /* DARK MODE
 body.dark {
     --primary-color: #009dff;

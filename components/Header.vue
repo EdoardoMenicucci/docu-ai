@@ -5,13 +5,13 @@
       <NuxtLink v-if="status === 'unauthenticated'" to="/login" class="mr-4">
         <button class="bg-primaryb rounded text-white p-2">LogIn</button>
       </NuxtLink>
-      <button v-else class="bg-primaryb hover:bg-accent rounded text-white p-2" @click="signOut">LogOut</button>
-      <!-- <UBadge>{{ data?.user.credits }}</UBadge> -->
+      <button v-else class="bg-primaryb hover:bg-accent rounded text-white p-2" @click="signOut()">LogOut</button>
+      <!-- <UBadge color="gray">{{ data?.user.credits }}</UBadge> -->
 
     </div>
   </div>
   <!-- {{ data.user }} -->
-  {{ status }} , {{ data?.user }}
+  <!-- {{ status }} , {{ data?.user }} -->
 </template>
 
 <script lang="ts" setup>

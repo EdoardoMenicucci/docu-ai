@@ -26,15 +26,24 @@
 //         // })
 //     ]
 // })
-interface User {
-    id?: string;
-    credits?: number;
+type User = {
+    id: number;
+    credits: number;
     email?: string;
     name?: string;
+    password?: string;
 }
 
 interface Session {
-    user?: User;
+    user: User;
+}
+
+type AdapterUser = {
+    id: number;
+    credits: number;
+    email?: string;
+    name?: string;
+    password?: string;
 }
 
 interface Token {
@@ -101,13 +110,13 @@ export default NuxtAuthHandler({
                     throw new Error('Credenziali non valide');
                 }
 
-                const isValid = await bcrypt.compare(credentials.password, user.password);
+                const isValid = await bcrypt.compare(credentials.password, user.password as string);
 
                 if (!isValid) {
                     throw new Error('Credenziali non valide');
                 }
 
-                return { id: user.id, email: user.email, credits: user.credits };
+                return { id: user.id, email: user.email, credits: user.credits as number };
             },
         }),
     ],
@@ -118,17 +127,17 @@ export default NuxtAuthHandler({
                 token.id = user.id;
                 token.name = user.name;
                 token.email = user.email;
-                token.credits = user.credits;
+                token.credits = user.credits as number ?? 0;
             }
             return token
         },
         async session({ session, token }) {
             // Aggiungi le informazioni dal token alla sessione
             if (token) {
-                session.user.id = token.id;
-                session.user.name = token.name;
-                session.user.credits = token.credits;// Aggiungi il campo credits
-                session.user.email = token.email ?? null;
+                session.user.id = token.id as string;
+                session.user.name = token.name as string ?? null;
+                session.user.credits = token.credits as number;// Aggiungi il campo credits
+                session.user.email = token.email as string ?? null;
             }
             return session
         }

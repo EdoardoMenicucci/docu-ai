@@ -18,4 +18,5 @@ export default defineNuxtConfig({
     },
     origin: 'http://localhost:3000',
   },
+  ssr: true,
 })

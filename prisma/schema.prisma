@@ -24,6 +24,7 @@ model User {
 
   accounts       Account[]
   sessions       Session[]
+  files          File[]
 }
 
 model Account {
@@ -60,4 +61,17 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+
+model File {
+  id        Int @id @default(autoincrement())
+  userId             Int
+  fileName           String?
+  fileUrl            String
+  status             String
+  analysisResult     String
+  createdAt          DateTime  @default(now())
+
+  user               User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
