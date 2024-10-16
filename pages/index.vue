@@ -13,7 +13,8 @@
     <div class="flex justify-center mb-5">
       <embed width="600" height="800" :src="pdfUrl" type='application/pdf'></embed>
     </div>
-    <div class="text-black bg-white p-5 rounded-xl border-brown-600 border-2" v-if="result" v-html="result">
+    <div class="text-black bg-white p-5 rounded-xl border-brown-600 border-2 m-4" v-if="result" v-for="res in result"
+      v-html="res">
     </div>
 
 
@@ -26,12 +27,16 @@
 const selectedFile = ref<File | null>(null);
 const pdfUrl = ref("");
 const promptUtente = ref("");
-const result = ref(null);
+const result = ref<Array<string | undefined>>([]);
+const previousFileName = ref<string | null>(null);
+const previousPrompt = ref<string | null>(null);
 
 // methods
 const handleFileChange = (event: Event) => {
 
   const target = event.target as HTMLInputElement;
+  result.value = [];
+  previousFileName.value = null;
 
   if (!target || !target.files) {
     console.error('Evento non valido:', event);
@@ -61,12 +66,24 @@ const handleFileChange = (event: Event) => {
 const uploadFile = async () => {
   console.log('File selezionato:', selectedFile.value);
 
+  let prompt = promptUtente.value;
+
   if (!selectedFile.value) return;
+
+  if (previousFileName.value === selectedFile.value.name) {
+    console.log('Il file è lo stesso del precedente, utilizzo il prompt precedente');
+    prompt = (previousPrompt.value ?? '') + ' ' + promptUtente.value;
+    previousPrompt.value = prompt; // Aggiorno il prompt concatenato
+  } else {
+    console.log('Il file è diverso, aggiorno il nome del file e il prompt');
+    previousFileName.value = selectedFile.value.name;
+    previousPrompt.value = prompt;
+  }
 
   const formData = new FormData();
 
   formData.append('file', selectedFile.value);
-  formData.append('promptUtente', promptUtente.value);
+  formData.append('promptUtente', prompt);
 
   try {
     console.log('try:', selectedFile.value);
@@ -82,7 +99,7 @@ const uploadFile = async () => {
     }
 
     const res = await response.json();
-    result.value = res.body.result.response.candidates[0].content.parts[0].text
+    result.value.push(res.body.result.response.candidates[0].content.parts[0].text);
     console.log('File caricato con successo:', result.value);
   } catch (error) {
     console.error('Errore durante l\'upload:', error);
