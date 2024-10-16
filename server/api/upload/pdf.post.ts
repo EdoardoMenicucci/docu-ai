@@ -27,10 +27,14 @@ export default defineEventHandler(async (event) => {
         fileData = data;
       }
       if (data.name === 'promptUtente') {
-        console.log('prompt utente:', data);
-        promptUtente = data;
+        promptUtente = data.data.toString();
+        console.log('prompt utente:', promptUtente);
+
       }
     }
+
+    console.log('Prompt utente:', promptUtente);
+
 
     if (!fileData) {
       throw createError({ statusCode: 400, message: 'No file uploaded' });
@@ -38,14 +42,10 @@ export default defineEventHandler(async (event) => {
 
     console.log('Received file:', fileData.filename);
 
-    // Salva il file localmente
     // Salva il file localmente nella directory temporanea del sistema operativo
     const tempDir = os.tmpdir();
     const filePath = path.join(tempDir, fileData.filename ?? '');
     await fs.writeFile(filePath, fileData.data);
-
-    // fileData.data is a Buffer containing the file content
-    // const fileDataBase64 = fileData.data.toString('base64');
 
     // Inizializza GoogleAIFileManager
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY ?? '');
@@ -62,7 +62,10 @@ export default defineEventHandler(async (event) => {
 
 
     // Prompt
-    const prompt = `**Estrai i concetti di maggiore importanza sintetizzando molto brevemente il contenuto del documento e rispondi in italiano. non inventarti nulla, solo quello che estrai dal documento. rispondi rispettando i tag html per la formattazione del testo e utilizza classi Tailwind per aggiungere stile come enfasi dei contenuti piu importanti **CREA TABELLE SE NECESSARIO**  **EVITA TAG HEAD, BODY, STYLE** **SENTITI LIBERO DI UTILIZZARI ANCHE COLORI COME ENFASI**, inoltre tieni conto di eventuali richieste dall utente:** .`;
+    const prompt = `Estrai i concetti di maggiore importanza sintetizzando molto brevemente il contenuto del documento e rispondi 
+    in italiano. non inventarti nulla, solo quello che estrai dal documento. rispondi rispettando i tag html
+    per la formattazione del testo (ul , li , ol , h1 , h..., tb , th , tb ,tr , p ecc ecc ) e per la creazione delle tabelle. utilizza le classi Tailwind per aggiungere stile
+    come enfasi dei contenuti piu importanti, inoltre tieni conto di eventuali richieste riportate qua di seguito dall utente:  ${promptUtente}.`;
 
     const result = await model.generateContent([
       {

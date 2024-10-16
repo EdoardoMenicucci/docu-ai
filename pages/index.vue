@@ -7,7 +7,6 @@
       <input type="file" accept="application/pdf" @change="handleFileChange"
         class="m-4 text-brown-500 bg-accent w-full rounded-md">
       <UInput v-model="promptUtente" placeholder="Cosa vuoi estrarre?" class="m-4 w-full" />
-      <!-- <UButton @click="uploadFile">Invia</UButton> -->
       <UButton class="m-4" @click="uploadFile">Analizza</UButton>
 
     </div>
