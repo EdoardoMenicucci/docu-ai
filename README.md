@@ -1,4 +1,26 @@
-Estrarre contenuti importanti dai pdf.
+## Configuare l'App
+
+```sh
+git clone {urlRepo}
+```
+
+## Installare Dipendenze
+
+```sh
+npm install
+```
+
+## Configura variabili d'ambiente file .env
+
+```sh
+GEMINI_API_KEY=la-tua-chiave-api
+```
+
+## Avvia l'applicazione
+
+```sh
+npm run dev
+```
 
 ## TODO
 
