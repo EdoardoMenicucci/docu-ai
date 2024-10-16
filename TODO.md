@@ -36,47 +36,9 @@
 
   - Crea una mappatura tra il testo estratto e la posizione nel PDF per applicare le evidenziazioni correttamente.
 
-### **5. Gestione delle richieste e scalabilità**
-
-- **Processi asincroni**: Poiché l'elaborazione potrebbe richiedere tempo, implementa code di lavoro con strumenti come **BullMQ** (con **Redis**) per gestire le richieste in modo asincrono.
-
-- **Notifiche in tempo reale**: Usa **WebSockets** o librerie come **Socket.io** per aggiornare gli utenti sullo stato delle loro richieste in tempo reale.
-
-### **6. Sicurezza**
-
-- **Validazione dei file**: Assicurati di validare i file caricati per prevenire l'upload di contenuti maligni.
-
-- **Protezione dei dati**: Implementa protocolli HTTPS e assicurati che i dati sensibili siano criptati sia in transito che a riposo.
-
-- **Limitazione delle richieste**: Implementa rate limiting per prevenire abusi del sistema.
-
-### **7. Monitoraggio e logging**
-
-- **Logging**: Usa librerie come **Winston** o **Morgan** per registrare le attività dell'applicazione, facilitando il debugging e la manutenzione.
-
-- **Monitoraggio delle performance**: Integra strumenti come **New Relic**, **Sentry** o **Datadog** per monitorare le prestazioni e gli errori dell'applicazione.
-
-### **8. Testing e deployment**
-
-- **Testing**: Scrivi test unitari e di integrazione usando strumenti come **Jest** o **Mocha** per garantire la qualità del codice.
-
-- **CI/CD**: Implementa pipeline di integrazione e distribuzione continua con **GitHub Actions**, **GitLab CI/CD** o **Jenkins**.
-
-- **Containerizzazione**: Considera l'uso di **Docker** per containerizzare l'applicazione, facilitando il deployment su vari ambienti.
-
-### **9. Considerazioni aggiuntive**
-
-- **Gestione dei pacchetti di crediti**: Implementa un sistema che permetta agli utenti di acquistare crediti aggiuntivi. Puoi integrare servizi di pagamento come **Stripe** o **PayPal**.
-
-- **Localizzazione**: Se prevedi di avere utenti internazionali, implementa la localizzazione con librerie come **vue-i18n**.
-
-- **Accessibilità**: Assicurati che l'applicazione sia accessibile seguendo le linee guida WCAG.
-
 ### **10. Risorse utili**
 
 - **Nuxt.js Documentation**: [https://nuxtjs.org/docs](https://nuxtjs.org/docs)
-
-- **OpenAI API Documentation**: [https://platform.openai.com/docs/introduction](https://platform.openai.com/docs/introduction)
 
 - **pdf-lib**: [https://pdf-lib.js.org/](https://pdf-lib.js.org/)
 
