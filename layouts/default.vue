@@ -1,6 +1,6 @@
 <template>
   <div class="bg-background ">
-    <Header />
+    <Header class=" border-b-2 border-gray-600" />
     <slot />
   </div>
 </template>

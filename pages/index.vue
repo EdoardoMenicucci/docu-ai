@@ -1,21 +1,42 @@
 <template>
-  <div class="container mx-auto mt-10">
-    <div class=" max-w-96 mx-auto">
+  <div class="container mx-auto bg-white min-h-screen pb-20">
+    <div class="max-w-96 mx-auto">
       <h1 class="text-3xl text-black text-center font-bold mb-5">Carica un file PDF</h1>
-      <!-- <UInput type="file" size="sm" icon="i-heroicons-folder" @input="handleFileChange" accept="application/pdf"
-        class="m-4" /> -->
-      <input type="file" accept="application/pdf" @change="handleFileChange"
-        class="m-4 text-brown-500 bg-accent w-full rounded-md">
-      <UInput v-model="promptUtente" placeholder="Cosa vuoi estrarre?" class="m-4 w-full" />
-      <UButton class="m-4" @click="uploadFile">Analizza</UButton>
+    </div>
+    <div class="mx-5 flex justify-end">
+      <div class="mb-5 mx-5 mt-4 justify-end">
+        <embed width="500" height="760" :src="pdfUrl" type='application/pdf'></embed>
+      </div>
+      <UIcon name="material-symbols:account-circle-outline" class="text-gray-500 text-end" mode="svg" size="2em"
+        v-if="firstLoad" />
+    </div>
+
+
+    <div v-if="chat" v-for="res in chat">
+      <div class="flex mx-5 " :class="{ 'justify-end': res.user === 'user' }">
+        <div v-html="res.text" class="text-black bg-white p-5 rounded-xl border-brown-600 border-2 m-4 order-1 w-3/4"
+          :class="{ 'order-2': res.user === 'bot' }">
+        </div>
+        <UIcon name="material-symbols:account-circle-outline" class="text-gray-500 order-2" mode="svg"
+          v-if="res.user === 'user'" size="2em" />
+        <UIcon v-else name="mdi:robot-outline" class="text-gray-500 order-1" mode="svg" size="2em" />
+      </div>
 
     </div>
-    <div class="flex justify-center mb-5">
-      <embed width="600" height="800" :src="pdfUrl" type='application/pdf'></embed>
+
+
+
+
+
+    <!-- INPUT FIXED -->
+    <div class="fixed bottom-5 left-1/4 container mx-auto p-5 flex justify-center w-1/2">
+      <input type="file" accept="application/pdf" @change="handleFileChange"
+        class="m-4 text-brown-500 bg-accent rounded-md">
+      <UInput v-model="promptUtente" placeholder="Cosa vuoi estrarre?" class="m-4 w-full" />
+      <UButton class="m-4" @click="uploadFile">Analizza</UButton>
+      <UButton class="m-4" @click="reset" variant="solid" icon="material-symbols:reset-shadow"></UButton>
     </div>
-    <div class="text-black bg-white p-5 rounded-xl border-brown-600 border-2 m-4" v-if="result" v-for="res in result"
-      v-html="res">
-    </div>
+
 
 
   </div>
@@ -30,13 +51,31 @@ const promptUtente = ref("");
 const result = ref<Array<string | undefined>>([]);
 const previousFileName = ref<string | null>(null);
 const previousPrompt = ref<string | null>(null);
+const chat = ref<Chat[]>([]);
+const firstLoad = ref<boolean>(false);
+
+// types
+interface Chat {
+  text: string;
+  user: string;
+}
 
 // methods
+const reset = () => {
+  promptUtente.value = "";
+  result.value = [];
+  previousFileName.value = null;
+  previousPrompt.value = null;
+  chat.value = [];
+}
+
 const handleFileChange = (event: Event) => {
 
   const target = event.target as HTMLInputElement;
-  result.value = [];
-  previousFileName.value = null;
+  // result.value = [];
+  // chat.value = [];
+  // previousFileName.value = null;
+  reset();
 
   if (!target || !target.files) {
     console.error('Evento non valido:', event);
@@ -56,6 +95,7 @@ const handleFileChange = (event: Event) => {
   }
 
   selectedFile.value = file;
+  firstLoad.value = true;
   pdfUrl.value = URL.createObjectURL(file);
   console.log('URL:', pdfUrl.value);
   console.log('File selezionato:', selectedFile.value);
@@ -65,6 +105,11 @@ const handleFileChange = (event: Event) => {
 
 const uploadFile = async () => {
   console.log('File selezionato:', selectedFile.value);
+
+  chat.value.push({
+    text: promptUtente.value,
+    user: 'user'
+  });
 
   let prompt = promptUtente.value;
 
@@ -100,6 +145,11 @@ const uploadFile = async () => {
 
     const res = await response.json();
     result.value.push(res.body.result.response.candidates[0].content.parts[0].text);
+    chat.value.push({
+      text: res.body.result.response.candidates[0].content.parts[0].text,
+      user: 'bot'
+    }
+    )
     console.log('File caricato con successo:', result.value);
   } catch (error) {
     console.error('Errore durante l\'upload:', error);
