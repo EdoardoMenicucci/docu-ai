@@ -65,7 +65,9 @@ export default defineEventHandler(async (event) => {
     const prompt = `Estrai i concetti di maggiore importanza sintetizzando molto brevemente il contenuto del documento e rispondi 
     in italiano. non inventarti nulla, solo quello che estrai dal documento. rispondi rispettando i tag html
     per la formattazione del testo (ul , li , ol , h1 , h..., tb , th , tb ,tr , p ecc ecc ) e per la creazione delle tabelle. utilizza le classi Tailwind per aggiungere stile
-    come enfasi dei contenuti piu importanti, inoltre tieni conto di eventuali richieste riportate qua di seguito dall utente:  ${promptUtente}.`;
+    come enfasi dei contenuti piu importanti, inoltre tieni conto di eventuali richieste riportate qua di seguito dall utente e inseriscile in una sezione:  ${promptUtente}.`;
+
+    // const prompt = `il tuo lavoro è di sintetizzare il contenuto del documento in italiano, rispettando la formattazione html del testo e delle tabelle (ul , li , ol , h1 , h..., tb , th , tb ,tr , p .... ). Inoltre, enfatizza i concetti più importanti utilizzando le classi TailwindCSS (font-xl , bold , text-blue .....). Rispetta le richieste dell'utente: ` + promptUtente;
 
     const result = await model.generateContent([
       {

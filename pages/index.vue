@@ -1,9 +1,23 @@
 <template>
-  <div class="container mx-auto bg-white min-h-screen pb-20">
+  <div class="container mx-auto bg-white min-h-screen pb-20 pt-5">
     <div class="max-w-96 mx-auto">
-      <h1 class="text-3xl text-black text-center font-bold mb-5">Carica un file PDF</h1>
+      <!-- <h1 class="text-3xl text-black text-center font-bold mb-5">Carica un file PDF</h1> -->
     </div>
-    <div class="mx-5 flex justify-end">
+
+    <!-- Messaggio iniziale -->
+    <div class="flex mx-5 ">
+      <UIcon name="mdi:robot-outline" class="text-gray-500 order-1" mode="svg" size="2em" />
+      <div class="text-black bg-white p-5 rounded-xl border-brown-600 border-2 m-4 order-1 w-3/4 relative">
+        Ciao! Sono il tuo assistente virtuale, <strong>carica un file PDF</strong> e chiedimi di estrarre le
+        informazioni che ti servono.
+      </div>
+      <div>
+
+      </div>
+    </div>
+
+    <!-- PDF DISPLAY -->
+    <div v-if="firstLoad" class="mx-5 flex justify-end">
       <div class="mb-5 mx-5 mt-4 justify-end">
         <embed width="500" height="760" :src="pdfUrl" type='application/pdf'></embed>
       </div>
@@ -12,20 +26,34 @@
     </div>
 
 
+    <!-- CHAT -->
     <div v-if="chat" v-for="res in chat">
-      <div class="flex mx-5 " :class="{ 'justify-end': res.user === 'user' }">
-        <div v-html="res.text" class="text-black bg-white p-5 rounded-xl border-brown-600 border-2 m-4 order-1 w-3/4"
+      <div class="flex mx-5" :class="{ 'justify-end': res.user === 'user' }">
+        <div class="w-3/4 relative text-black bg-white p-5 rounded-xl border-brown-600 border-2 m-4 order-1"
           :class="{ 'order-2': res.user === 'bot' }">
+          <div v-html="res.text" class="">
+          </div>
+          <UBadge class="absolute -top-3" :class="{ 'left-1': res.user === 'user', 'right-1': res.user === 'bot' }">
+            {{ res.date }}
+          </UBadge>
         </div>
         <UIcon name="material-symbols:account-circle-outline" class="text-gray-500 order-2" mode="svg"
           v-if="res.user === 'user'" size="2em" />
         <UIcon v-else name="mdi:robot-outline" class="text-gray-500 order-1" mode="svg" size="2em" />
-      </div>
 
+      </div>
     </div>
 
 
-
+    <!-- skeleton -->
+    <div v-if="isUploading" class="flex mx-5">
+      <UIcon name="mdi:robot-outline" class="text-gray-500 order-1" mode="svg" size="2em" />
+      <div class="text-black bg-white p-5 rounded-xl border-brown-600 border-2 m-4 order-1 w-3/4">
+        <USkeleton class="h-10 w-[87%] mb-3" />
+        <USkeleton class="h-10 w-[75%] mb-3" />
+        <USkeleton class="h-10 w-[60%]" />
+      </div>
+    </div>
 
 
     <!-- INPUT FIXED -->
@@ -43,6 +71,10 @@
 </template>
 
 <script lang="ts" setup>
+// page meta
+definePageMeta({
+  middleware: 'auth',
+})
 
 // variables
 const selectedFile = ref<File | null>(null);
@@ -53,14 +85,22 @@ const previousFileName = ref<string | null>(null);
 const previousPrompt = ref<string | null>(null);
 const chat = ref<Chat[]>([]);
 const firstLoad = ref<boolean>(false);
+const isUploading = ref<boolean>(false);
+
 
 // types
 interface Chat {
   text: string;
   user: string;
+  date: string;
 }
 
 // methods
+const getCurrentTime = (): string => {
+  const now = new Date();
+  return now.toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });
+}
+
 const reset = () => {
   promptUtente.value = "";
   result.value = [];
@@ -72,9 +112,6 @@ const reset = () => {
 const handleFileChange = (event: Event) => {
 
   const target = event.target as HTMLInputElement;
-  // result.value = [];
-  // chat.value = [];
-  // previousFileName.value = null;
   reset();
 
   if (!target || !target.files) {
@@ -108,8 +145,11 @@ const uploadFile = async () => {
 
   chat.value.push({
     text: promptUtente.value,
-    user: 'user'
+    user: 'user',
+    date: getCurrentTime()
   });
+
+  isUploading.value = true;
 
   let prompt = promptUtente.value;
 
@@ -144,10 +184,12 @@ const uploadFile = async () => {
     }
 
     const res = await response.json();
+    isUploading.value = false;
     result.value.push(res.body.result.response.candidates[0].content.parts[0].text);
     chat.value.push({
       text: res.body.result.response.candidates[0].content.parts[0].text,
-      user: 'bot'
+      user: 'bot',
+      date: getCurrentTime()
     }
     )
     console.log('File caricato con successo:', result.value);

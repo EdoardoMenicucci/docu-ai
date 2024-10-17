@@ -78,6 +78,9 @@ import prisma from '~/lib/prisma';
 
 export default NuxtAuthHandler({
     adapter: PrismaAdapter(prisma),
+    pages: {
+        signIn: '/login',
+    },
     session: {
         strategy: 'jwt',
         maxAge: 30 * 24 * 60 * 60, // 30 giorni
