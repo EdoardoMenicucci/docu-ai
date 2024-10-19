@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -13,6 +15,7 @@
 
 body{
     min-height: 100vh;
+    font-family: 'Inter', sans-serif;
 }
 /* DARK MODE
 body.dark {
@@ -23,3 +26,24 @@ body.dark {
     --text-color: #F4F4F9;
     --highlight-color: #F9E79F;
 } */
+
+/* Webkits */
+input:-webkit-autofill {
+    background-color: #2d3748 !important; /* bg-dark-gray-800 */
+    color: #fff !important; /* text-white */
+}
+
+input:-moz-autofill {
+    background-color: #2d3748 !important; /* bg-dark-gray-800 */
+    color: #fff !important; /* text-white */
+}
+
+input:-ms-autofill {
+    background-color: #2d3748 !important; /* bg-dark-gray-800 */
+    color: #fff !important; /* text-white */
+}
+
+input:-o-autofill {
+    background-color: #2d3748 !important; /* bg-dark-gray-800 */
+    color: #fff !important; /* text-white */
+}

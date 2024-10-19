@@ -1,22 +1,24 @@
 <template>
-    <div class="min-h-screen flex items-center justify-center bg-background">
-        <div class="w-full max-w-md bg-white p-8 rounded-lg shadow-md">
-            <h1 class="text-2xl font-semibold text-center mb-6 text-black">Login</h1>
+    <div class="min-h-screen flex items-center justify-center bg-dark-gray-800">
+        <div class="w-full max-w-md bg-dark-gray-900 p-8 rounded-lg shadow-md text-gray-200">
+            <h1 class="text-2xl font-semibold text-center mb-6">Login</h1>
 
             <!-- Classic Login Form -->
             <form @submit.prevent="login" class="space-y-4">
                 <div>
-                    <label for="email" class="block text-gray-700">Email</label>
-                    <UInput type="email" v-model="email" id="email" placeholder="email@example.com" required />
+                    <label for="email" class="block">Email</label>
+                    <input type="email" v-model="email" id="email" placeholder="email@example.com" required
+                        class="w-full rounded-md bg-dark-gray-800 border border-dark-gray-500 text-white p-2" />
                 </div>
 
                 <div>
-                    <label for="password" class="block text-gray-700">Password</label>
-                    <UInput type="password" v-model="password" id="password" required />
+                    <label for="password" class="block">Password</label>
+                    <input type="password" v-model="password" id="password" required
+                        class="w-full rounded-md bg-dark-gray-800 border border-dark-gray-500 p-2" />
                 </div>
 
                 <button type="submit"
-                    class="w-full bg-teal-500 text-white py-2 rounded-md hover:bg-teal-600 transition-colors">
+                    class="w-full px-6 py-3 border border-dark-gray-500 text-white rounded-md hover:border-white hover:bg-dark-gray-700 transition-colors">
                     Accedi
                 </button>
             </form>
@@ -30,8 +32,8 @@
 
             <!-- Signup Link -->
             <div class="mt-6 text-center">
-                <p class="text-gray-600">Non hai un account?</p>
-                <nuxt-link to="/register" class="text-teal-500 hover:text-emerald-500 transition-colors">
+                <p class="text-gray-400">Non hai un account?</p>
+                <nuxt-link to="/register" class="text-gray-200 hover:text-white transition-colors">
                     Crea un account
                 </nuxt-link>
             </div>
@@ -39,7 +41,7 @@
             <!-- Social Login -->
             <div class="mt-6 space-y-3">
                 <button @click="signIn('github')"
-                    class="w-full flex items-center justify-center bg-gray-600 text-white py-2 rounded-md hover:bg-gray-900 transition-colors">
+                    class="w-full flex items-center justify-center px-6 py-3 border border-dark-gray-500 text-white rounded-md hover:border-white hover:bg-dark-gray-700 transition-colors">
                     <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
                         <!-- GitHub Icon -->
                         <path fill-rule="evenodd"
@@ -48,19 +50,8 @@
                     </svg>
                     Collegati con GitHub
                 </button>
-
-                <!-- <button @click="signIn('discord')"
-            class="w-full flex items-center justify-center bg-indigo-600 text-white py-2 rounded-md hover:bg-indigo-800 transition-colors">
-            <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
-              <Discord Icon 
-              <path
-                d="M20.317 4.369a19.79 19.79 0 00-4.933-1.392.071.071 0 00-.075.037 15.955 15.955 0 00-3.091 6.517 19.83 19.83 0 00-7.59 0 15.96 15.96 0 00-3.091-6.517.07.07 0 00-.075-.037 19.758 19.758 0 00-4.933 1.392.07.07 0 00-.03.106 19.874 19.874 0 002.394 2.556.07.07 0 01-.02.11c-.898.544-1.73 1.15-2.475 1.808a.07.07 0 00-.003.106 18.947 18.947 0 005.118 3.93.07.07 0 01.02.106A.072.072 0 005.017 13c-.787-.46-1.537-.968-2.236-1.52a.07.07 0 00-.103.05c-.181.923-.276 1.88-.276 2.86a.07.07 0 00.07.07h.002c.003 0 .006 0 .01 0a18.916 18.916 0 005.166 3.923.07.07 0 01.02.107c-.752.652-1.58 1.258-2.48 1.812a.07.07 0 00-.003.106c.732.742 1.58 1.415 2.48 1.966a.07.07 0 01.02.11 19.001 19.001 0 002.394-2.556.07.07 0 00-.03-.106 19.791 19.791 0 00-4.933-1.392.07.07 0 00-.075.037 15.96 15.96 0 00-3.091 6.517 19.83 19.83 0 00-7.59 0 15.955 15.955 0 00-3.091-6.517.07.07 0 00-.075-.037 19.758 19.758 0 00-4.933 1.392.07.07 0 00-.03.106 19.874 19.874 0 002.394 2.556.07.07 0 01-.02.11c-.898.544-1.73 1.15-2.475 1.808a.07.07 0 00-.003.106 18.947 18.947 0 005.118 3.93.07.07 0 01.02.106c-.787-.46-1.537-.968-2.236-1.52a.07.07 0 00-.103.05c-.181.923-.276 1.88-.276 2.86a.07.07 0 00.07.07h.002c.003 0 .006 0 .01 0a18.916 18.916 0 005.166 3.923.07.07 0 01.02.107c-.752.652-1.58 1.258-2.48 1.812a.07.07 0 00-.003.106c.732.742 1.58 1.415 2.48 1.966a.07.07 0 01.02.11 19.001 19.001 0 002.394-2.556.07.07 0 00-.03-.106 19.791 19.791 0 00-4.933-1.392.07.07 0 00-.075.037 15.96 15.96 0 00-3.091 6.517 19.83 19.83 0 00-7.59 0 15.955 15.955 0 00-3.091-6.517.07.07 0 00-.075-.037 19.758 19.758 0 00-4.933 1.392.07.07 0 00-.03.106 19.874 19.874 0 002.394 2.556.07.07 0 01-.02.11c-.898.544-1.73 1.15-2.475 1.808a.07.07 0 00-.003.106 18.947 18.947 0 005.118 3.93.07.07 0 01.02.106c-.787-.46-1.537-.968-2.236-1.52a.07.07 0 00-.103.05c-.181.923-.276 1.88-.276 2.86a.07.07 0 00.07.07h.002c.003 0 .006 0 .01 0a18.916 18.916 0 005.166 3.923.07.07 0 01.02.107c-.752.652-1.58 1.258-2.48 1.812a.07.07 0 00-.003.106c.732.742 1.58 1.415 2.48 1.966a.07.07 0 01.02.11 19.001 19.001 0 002.394-2.556.07.07 0 00-.03-.106 19.791 19.791 0 00-4.933-1.392z" />
-            </svg>
-            Collegati con Discord
-          </button> -->
-
                 <button v-if="status === 'authenticated'" @click="signOut"
-                    class="w-full bg-red-500 text-white py-2 rounded-md hover:bg-red-600 transition-colors">
+                    class="w-full px-6 py-3 border border-dark-gray-500 text-white rounded-md hover:border-white hover:bg-dark-gray-700 transition-colors">
                     Log Out
                 </button>
             </div>
@@ -78,9 +69,10 @@ const { signOut, signIn, status } = useAuth()
 
 
 definePageMeta({
+    middleware: 'auth',
     auth: {
-        // unauthenticatedOnly: true,
-        // navigateAutenticatedTo: '/'
+        unauthenticatedOnly: true,
+        navigateAutenticatedTo: '/chat'
     }
 })
 
@@ -103,7 +95,7 @@ const login = async () => {
             errors.value.push(res.error)
         } else if (res?.ok) {
             // Login riuscito
-            router.push('/')
+            router.push('/chat')
         } else {
             alert('Credenziali non valide')
             errors.value.push('Credenziali non valide')
@@ -122,7 +114,38 @@ const password = ref('')
 </script>
 
 <style scoped>
-input {
-    color: black
+input:-webkit-autofill {
+    background-color: #020303 !important;
+    /* bg-dark-gray-800 */
+    color: #fff !important;
+    /* text-white */
+}
+
+input:-moz-autofill {
+    background-color: #07090c !important;
+    /* bg-dark-gray-800 */
+    color: #fff !important;
+    /* text-white */
+}
+
+input:-ms-autofill {
+    background-color: #000000 !important;
+    /* bg-dark-gray-800 */
+    color: #fff !important;
+    /* text-white */
+}
+
+input:-o-autofill {
+    background-color: #000000 !important;
+    /* bg-dark-gray-800 */
+    color: #fff !important;
+    /* text-white */
+}
+
+input:autofill {
+    background-color: #000000 !important;
+    /* bg-dark-gray-800 */
+    color: #fff !important;
+    /* text-white */
 }
 </style>
