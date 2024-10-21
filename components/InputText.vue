@@ -2,13 +2,12 @@
   <div class="flex items-center justify-center">
     <label for="file-upload" class="cursor-pointer text-dark-gray-200 hover:text-gray-100 mr-2">
       <!-- Icona per caricare file -->
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 16v4H8v-4H5l7-7 7 7h-3z" />
-      </svg>
+      <UIcon name="material-symbols:upload" class="text-dark-gray-200" mode="svg" size="1.5em" />
       <input id="file-upload" type="file" accept="application/pdf" class="hidden" @change="onFileSelected" />
     </label>
 
-    <textarea v-model="message" ref="messageInput" @input="autoResize" rows="1" placeholder="Scrivi il tuo messaggio..."
+    <textarea v-model="message" @keydown="handleKeyDown" ref="messageInput" @input="autoResize" rows="1"
+      placeholder="Scrivi il tuo messaggio..."
       class="resize-none overflow-hidden w-full p-2 border border-dark-gray-500 rounded-md focus:outline-none focus:ring-2 focus:ring-dark-gray-400"></textarea>
 
     <button @click="handleSendMessage"
@@ -45,6 +44,13 @@ const handleSendMessage = () => {
   nextTick(() => {
     autoResize();
   });
+};
+
+const handleKeyDown = (event: KeyboardEvent) => {
+  if (event.key === 'Enter' && !event.shiftKey) {
+    event.preventDefault();
+    handleSendMessage();
+  }
 };
 
 

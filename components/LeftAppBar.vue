@@ -2,9 +2,17 @@
   <div class="w-[10rem] bg-dark-gray-800 pt-5 flex-shrink-0 flex flex-col">
     <NuxtLink to="/" class="">
       <div class="flex w-full hover:bg-dark-gray-500 py-2 items-center ps-2">
-        <UIcon name="material-symbols:home-outline" class="text-dark-gray-200 mx-1" mode="svg" size="1.5em" />
+        <UIcon name="material-symbols:arrow-back" class="text-dark-gray-200 mx-1" mode="svg" size="1.5em" />
         <div class="">
-          Home
+          Back
+        </div>
+      </div>
+    </NuxtLink>
+    <NuxtLink to="/" class="">
+      <div class="flex w-full hover:bg-dark-gray-500 py-2 items-center ps-2">
+        <UIcon name="material-symbols:refresh" class="text-dark-gray-200 mx-1" mode="svg" size="1.5em" />
+        <div class="">
+          Reset
         </div>
       </div>
     </NuxtLink>

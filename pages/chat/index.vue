@@ -7,8 +7,6 @@
     <div class="mx-auto h-screen flex flex-shrink">
       <!-- Left section -->
       <LeftAppBar />
-
-
       <!-- Right section -->
       <!-- 90vh overflow -->
       <div class=" mx-auto pt-5">
@@ -57,25 +55,13 @@
           <!-- skeleton -->
           <div v-if="isUploading" class="flex mx-5">
             <UIcon name="mdi:robot-outline" class="text-gray-500 order-1" mode="svg" size="2em" />
-            <div class="text-black bg-white p-5 rounded-xl border-brown-600 border-2 m-4 order-1 w-3/4">
+            <div class="text-black p-5 rounded-xl bg-dark-gray-800 border-dark-gray-500 border m-4 order-1 w-3/4">
               <USkeleton class="h-10 w-[87%] mb-3" />
               <USkeleton class="h-10 w-[75%] mb-3" />
               <USkeleton class="h-10 w-[60%]" />
             </div>
           </div>
         </div>
-
-
-
-
-        <!-- INPUT FIXED -->
-        <!-- <div class="fixed bottom-5 left-1/4 container mx-auto p-5 flex justify-center w-1/2"> -->
-        <!-- <input type="file" accept="application/pdf" @change="handleFileChange" -->
-        <!-- class="m-4 text-brown-500 bg-accent rounded-md"> -->
-        <!-- <UInput v-model="promptUtente" placeholder="Cosa vuoi estrarre?" class="m-4 w-full" />
-        <UButton class="m-4" @click="uploadFile">Analizza</UButton>
-        <UButton class="m-4" @click="reset" variant="solid" icon="material-symbols:reset-shadow"></UButton>
-        </div> -->
 
         <!-- input component -->
         <InputText class="h-[8vh]" @change="handleChange" @sendMessage="handleSendMessage" />
@@ -165,7 +151,7 @@ const uploadFile = async () => {
 
   if (previousFileName.value === selectedFile.value.name) {
     console.log('Il file è lo stesso del precedente, utilizzo il prompt precedente');
-    prompt = (previousPrompt.value ?? '') + ' ' + promptUtente.value;
+    prompt = promptUtente.value;
     previousPrompt.value = prompt; // Aggiorno il prompt concatenato
   } else {
     console.log('Il file è diverso, aggiorno il nome del file e il prompt');
