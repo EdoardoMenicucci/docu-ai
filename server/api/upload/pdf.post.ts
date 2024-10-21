@@ -67,7 +67,12 @@ export default defineEventHandler(async (event) => {
     // per la formattazione del testo (ul , li , ol , h1 , h..., tb , th , tb ,tr , p ecc ecc ) e per la creazione delle tabelle. utilizza le classi Tailwind per aggiungere stile
     // come enfasi dei contenuti piu importanti, inoltre tieni conto di eventuali richieste riportate qua di seguito dall utente e inseriscile in una sezione:  ${promptUtente}.`;
 
-    const prompt = `Estrai i concetti più importanti sintetizzando brevemente il contenuto del documento, senza inventare nulla. Rispondi in italiano, utilizzando i tag HTML per la formattazione del testo (ul, li, ol, h1, h2, p, ecc.) e per la creazione di tabelle (table, thead, tbody, tr, th, td). Applica le classi di Tailwind CSS per aggiungere stile ed enfatizzare i contenuti più importanti (il testo deve essere bianco/chiaro). Inoltre, tieni conto delle eventuali richieste dell'utente riportate di seguito e inseriscile in una sezione: ${promptUtente}.`;
+    const prompt = `
+      Estrai i concetti più importanti sintetizzando il contenuto del documento.
+      Non inventare nulla.
+      Rispondi in italiano, utilizzando i tag HTML per la formattazione del testo (ul, li, ol, h1, h2, p, ecc.) e per la creazione di tabelle (table, thead, tbody, tr, th, td).
+      Applica le classi di Tailwind CSS per aggiungere stile ed enfatizzare i contenuti più importanti (il testo deve essere bianco/chiaro).
+      Inoltre, tieni conto delle eventuali richieste dell'utente riportate di seguito se l'utente inserisce informazioni rispondi alle sue esigenze: ${promptUtente}.`;
 
 
     // const prompt = `il tuo lavoro è di sintetizzare il contenuto del documento in italiano, rispettando la formattazione html del testo e delle tabelle (ul , li , ol , h1 , h..., tb , th , tb ,tr , p .... ). Inoltre, enfatizza i concetti più importanti utilizzando le classi TailwindCSS (font-xl , bold , text-blue .....). Rispetta le richieste dell'utente: ` + promptUtente;

@@ -1,5 +1,5 @@
 <template>
-  <div class="flex items-center p-4 border-t">
+  <div class="flex items-center justify-center">
     <label for="file-upload" class="cursor-pointer text-dark-gray-200 hover:text-gray-100 mr-2">
       <!-- Icona per caricare file -->
       <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -78,6 +78,4 @@ onMounted(() => {
 });
 </script>
 
-<style scoped>
-/* Aggiungi eventuali stili personalizzati qui */
-</style>
+<style scoped></style>

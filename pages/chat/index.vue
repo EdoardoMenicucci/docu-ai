@@ -1,74 +1,85 @@
 <template>
   <div class="bg-dark-gray-700">
-    <div class="container mx-auto h-screen pt-5">
+
+
+
+
+    <div class="mx-auto h-screen flex flex-shrink">
+      <!-- Left section -->
+      <LeftAppBar />
+
+
+      <!-- Right section -->
       <!-- 90vh overflow -->
-      <div class="h-[90vh] overflow-auto">
-        <!-- Messaggio iniziale -->
-        <div class="flex mx-5 ">
-          <UIcon name="mdi:robot-outline" class="text-dark-gray-200 order-1" mode="svg" size="2em" />
-          <div
-            class="bg-dark-gray-800 p-5 rounded-xl border-dark-gray-500 border m-4 order-1 w-3/4 relative text-white">
-            Ciao! Sono il tuo assistente virtuale, <strong>carica un file PDF</strong> e chiedimi di estrarre le
-            informazioni che ti servono.
-          </div>
-          <div>
-          </div>
-        </div>
-
-        <!-- PDF DISPLAY -->
-        <div v-if="firstLoad" class="mx-5 flex justify-end">
-          <div class="mb-5 mx-5 mt-4 justify-end">
-            <embed width="500" height="760" :src="pdfUrl" type='application/pdf'></embed>
-          </div>
-          <UIcon name="material-symbols:account-circle-outline" class="text-gray-500 text-end" mode="svg" size="2em"
-            v-if="firstLoad" />
-        </div>
-
-        <!-- CHAT -->
-        <div v-if="chat" v-for="res in chat">
-          <div class="flex mx-5" :class="{ 'justify-end': res.user === 'user' }">
+      <div class=" mx-auto pt-5">
+        <div class="h-[90vh] overflow-auto">
+          <!-- Messaggio iniziale -->
+          <div class="flex mx-5 ">
+            <UIcon name="mdi:robot-outline" class="text-dark-gray-200 order-1" mode="svg" size="2em" />
             <div
-              class="w-3/4 relative text-white bg-dark-gray-800 p-5 rounded-xl border-dark-gray-500 border-2 m-4 order-1"
-              :class="{ 'order-2': res.user === 'bot' }">
-              <div v-html="res.text" class="">
-              </div>
-              <UBadge class="absolute -top-3" :class="{ 'left-1': res.user === 'user', 'right-1': res.user === 'bot' }">
-                {{ res.date }}
-              </UBadge>
+              class="bg-dark-gray-800 p-5 rounded-xl border-dark-gray-500 border m-4 order-1 w-3/4 relative text-white">
+              Ciao! Sono il tuo assistente virtuale, <strong>carica un file PDF</strong> e chiedimi di estrarre le
+              informazioni che ti servono.
             </div>
-            <UIcon name="material-symbols:account-circle-outline" class="text-dark-gray-200 order-2" mode="svg"
-              v-if="res.user === 'user'" size="2em" />
-            <UIcon v-else name="mdi:robot-outline" class="text-dark-gray-200 order-1" mode="svg" size="2em" />
+            <div>
+            </div>
+          </div>
 
+          <!-- PDF DISPLAY -->
+          <div v-if="firstLoad" class="mx-5 flex justify-end">
+            <div class="mb-5 mx-5 mt-4 justify-end">
+              <embed width="500" height="760" :src="pdfUrl" type='application/pdf'></embed>
+            </div>
+            <UIcon name="material-symbols:account-circle-outline" class="text-gray-500 text-end" mode="svg" size="2em"
+              v-if="firstLoad" />
+          </div>
+
+          <!-- CHAT -->
+          <div v-if="chat" v-for="res in chat">
+            <div class="flex mx-5" :class="{ 'justify-end': res.user === 'user' }">
+              <div
+                class="w-3/4 relative text-white bg-dark-gray-800 p-5 rounded-xl border-dark-gray-500 border-2 m-4 order-1"
+                :class="{ 'order-2': res.user === 'bot' }">
+                <div v-html="res.text" class="">
+                </div>
+                <UBadge class="absolute -top-3"
+                  :class="{ 'left-1': res.user === 'user', 'right-1': res.user === 'bot' }">
+                  {{ res.date }}
+                </UBadge>
+              </div>
+              <UIcon name="material-symbols:account-circle-outline" class="text-dark-gray-200 order-2" mode="svg"
+                v-if="res.user === 'user'" size="2em" />
+              <UIcon v-else name="mdi:robot-outline" class="text-dark-gray-200 order-1" mode="svg" size="2em" />
+
+            </div>
+          </div>
+
+          <!-- skeleton -->
+          <div v-if="isUploading" class="flex mx-5">
+            <UIcon name="mdi:robot-outline" class="text-gray-500 order-1" mode="svg" size="2em" />
+            <div class="text-black bg-white p-5 rounded-xl border-brown-600 border-2 m-4 order-1 w-3/4">
+              <USkeleton class="h-10 w-[87%] mb-3" />
+              <USkeleton class="h-10 w-[75%] mb-3" />
+              <USkeleton class="h-10 w-[60%]" />
+            </div>
           </div>
         </div>
 
-        <!-- skeleton -->
-        <div v-if="isUploading" class="flex mx-5">
-          <UIcon name="mdi:robot-outline" class="text-gray-500 order-1" mode="svg" size="2em" />
-          <div class="text-black bg-white p-5 rounded-xl border-brown-600 border-2 m-4 order-1 w-3/4">
-            <USkeleton class="h-10 w-[87%] mb-3" />
-            <USkeleton class="h-10 w-[75%] mb-3" />
-            <USkeleton class="h-10 w-[60%]" />
-          </div>
-        </div>
+
+
+
+        <!-- INPUT FIXED -->
+        <!-- <div class="fixed bottom-5 left-1/4 container mx-auto p-5 flex justify-center w-1/2"> -->
+        <!-- <input type="file" accept="application/pdf" @change="handleFileChange" -->
+        <!-- class="m-4 text-brown-500 bg-accent rounded-md"> -->
+        <!-- <UInput v-model="promptUtente" placeholder="Cosa vuoi estrarre?" class="m-4 w-full" />
+        <UButton class="m-4" @click="uploadFile">Analizza</UButton>
+        <UButton class="m-4" @click="reset" variant="solid" icon="material-symbols:reset-shadow"></UButton>
+        </div> -->
+
+        <!-- input component -->
+        <InputText class="h-[8vh]" @change="handleChange" @sendMessage="handleSendMessage" />
       </div>
-
-
-
-
-      <!-- INPUT FIXED -->
-      <!-- <div class="fixed bottom-5 left-1/4 container mx-auto p-5 flex justify-center w-1/2"> -->
-      <!-- <input type="file" accept="application/pdf" @change="handleFileChange" -->
-      <!-- class="m-4 text-brown-500 bg-accent rounded-md"> -->
-      <!-- <UInput v-model="promptUtente" placeholder="Cosa vuoi estrarre?" class="m-4 w-full" />
-      <UButton class="m-4" @click="uploadFile">Analizza</UButton>
-      <UButton class="m-4" @click="reset" variant="solid" icon="material-symbols:reset-shadow"></UButton>
-      </div> -->
-
-      <!-- input component -->
-      <InputText @change="handleChange" @sendMessage="handleSendMessage" />
-
 
 
     </div>
