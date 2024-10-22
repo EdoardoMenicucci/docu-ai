@@ -1,12 +1,12 @@
 <template>
   <div class="bg-dark-gray-700">
-
-
-
-
     <div class="mx-auto h-screen flex flex-shrink">
+      <!-- Toggle per left bar -->
+      <UIcon name="mdi:menu"
+        class="text-dark-gray-200 border border-dark-gray-500 rounded-md order-1 fixed left-[11rem] top-3" mode="svg"
+        size="2em" @click="toggleLeftAppBar" />
       <!-- Left section -->
-      <LeftAppBar />
+      <LeftAppBar :class="{ '': leftAppBar == true }" v-if="leftAppBar == true" />
       <!-- Right section -->
       <!-- 90vh overflow -->
       <div class=" mx-auto pt-5">
@@ -34,19 +34,19 @@
 
           <!-- CHAT -->
           <div v-if="chat" v-for="res in chat">
-            <div class="flex mx-5" :class="{ 'justify-end': res.user === 'user' }">
+            <div class="flex mx-5" :class="{ 'justify-end': res.user === 'USER' }">
               <div
                 class="w-3/4 relative text-white bg-dark-gray-800 p-5 rounded-xl border-dark-gray-500 border-2 m-4 order-1"
-                :class="{ 'order-2': res.user === 'bot' }">
+                :class="{ 'order-2': res.user === 'AI' }">
                 <div v-html="res.text" class="">
                 </div>
                 <UBadge class="absolute -top-3"
-                  :class="{ 'left-1': res.user === 'user', 'right-1': res.user === 'bot' }">
+                  :class="{ 'left-1': res.user === 'USER', 'right-1': res.user === 'AI' }">
                   {{ res.date }}
                 </UBadge>
               </div>
               <UIcon name="material-symbols:account-circle-outline" class="text-dark-gray-200 order-2" mode="svg"
-                v-if="res.user === 'user'" size="2em" />
+                v-if="res.user === 'USER'" size="2em" />
               <UIcon v-else name="mdi:robot-outline" class="text-dark-gray-200 order-1" mode="svg" size="2em" />
 
             </div>
@@ -74,6 +74,7 @@
 </template>
 
 <script lang="ts" setup>
+import { v4 as uuidv4 } from 'uuid';
 // page meta
 definePageMeta({
   middleware: 'auth',
@@ -90,6 +91,10 @@ const previousPrompt = ref<string | null>(null);
 const chat = ref<Chat[]>([]);
 const firstLoad = ref<boolean>(false);
 const isUploading = ref<boolean>(false);
+// left bar
+const leftAppBar = ref<boolean>(true);
+// Session Id
+const sessionId = ref<string | null>(null);
 
 
 // types
@@ -121,6 +126,19 @@ const getCurrentTime = (): string => {
   const now = new Date();
   return now.toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });
 }
+// left bar
+const toggleLeftAppBar = () => {
+  leftAppBar.value = !leftAppBar.value;
+  console.log(leftAppBar.value);
+
+}
+// Funzione per iniziare una nuova sessione di chat
+const startNewChatSession = () => {
+  sessionId.value = uuidv4();
+  chat.value = [];
+  console.log('Nuova sessione di chat iniziata con sessionId:', sessionId.value);
+};
+
 
 const reset = () => {
   promptUtente.value = "";
@@ -133,12 +151,15 @@ const reset = () => {
 const uploadFile = async () => {
   console.log('File selezionato:', selectedFile.value);
 
-  if (promptUtente.value === '') {
+  if (chat.value.length === 0) {
+    startNewChatSession();
+  }
 
+  if (promptUtente.value === '') {
   } else {
     chat.value.push({
       text: promptUtente.value,
-      user: 'user',
+      user: 'USER',
       date: getCurrentTime()
     });
   }
@@ -163,6 +184,7 @@ const uploadFile = async () => {
 
   formData.append('file', selectedFile.value);
   formData.append('promptUtente', prompt);
+  formData.append('sessionId', sessionId.value as string);
 
   try {
     console.log('try:', selectedFile.value);
@@ -182,7 +204,7 @@ const uploadFile = async () => {
     result.value.push(res.body.result.response.candidates[0].content.parts[0].text);
     chat.value.push({
       text: res.body.result.response.candidates[0].content.parts[0].text,
-      user: 'bot',
+      user: 'AI',
       date: getCurrentTime()
     }
     )

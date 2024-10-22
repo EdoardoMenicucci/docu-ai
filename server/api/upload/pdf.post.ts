@@ -1,15 +1,24 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { GoogleAIFileManager } from '@google/generative-ai/server';
 import { readMultipartFormData } from 'h3';
+import { findOrCreateChat } from '~/server/helpers/chatHelper';
+import { saveFile } from '~/server/helpers/fileHelper';
+
+// session
+import { getServerSession } from '#auth'
 
 import fs from 'fs/promises';
 import path from 'path';
 import os from 'os';
 
 
-
 export default defineEventHandler(async (event) => {
-  console.log('--------------------------API---------------------------------');
+  console.log('------API------');
+
+  const session = await getServerSession(event);
+
+  console.log(session);
+
 
   const body = await readBody(event)
   const headers = getHeaders(event)
@@ -22,6 +31,7 @@ export default defineEventHandler(async (event) => {
     }
     let fileData;
     let promptUtente;
+    let sessionId;
     for (const data of formData) {
       if (data.name === 'file') {
         fileData = data;
@@ -29,7 +39,10 @@ export default defineEventHandler(async (event) => {
       if (data.name === 'promptUtente') {
         promptUtente = data.data.toString();
         console.log('prompt utente:', promptUtente);
-
+      }
+      if (data.name === 'sessionId') {
+        sessionId = data.data.toString();
+        console.log('sessionId:', sessionId);
       }
     }
 
@@ -42,10 +55,8 @@ export default defineEventHandler(async (event) => {
 
     console.log('Received file:', fileData.filename);
 
-    // Salva il file localmente nella directory temporanea del sistema operativo
-    const tempDir = os.tmpdir();
-    const filePath = path.join(tempDir, fileData.filename ?? '');
-    await fs.writeFile(filePath, fileData.data);
+    // Salva il file localmente
+    const filePath = await saveFile(fileData);
 
     // Inizializza GoogleAIFileManager
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY ?? '');
@@ -67,13 +78,6 @@ export default defineEventHandler(async (event) => {
 
     console.log('File caricato con successo:', uploadResponse);
 
-
-    // Prompt
-    // const prompt = `Estrai i concetti di maggiore importanza sintetizzando molto brevemente il contenuto del documento e rispondi 
-    // in italiano. non inventarti nulla, solo quello che estrai dal documento. rispondi rispettando i tag html
-    // per la formattazione del testo (ul , li , ol , h1 , h..., tb , th , tb ,tr , p ecc ecc ) e per la creazione delle tabelle. utilizza le classi Tailwind per aggiungere stile
-    // come enfasi dei contenuti piu importanti, inoltre tieni conto di eventuali richieste riportate qua di seguito dall utente e inseriscile in una sezione:  ${promptUtente}.`;
-
     const prompt = `${promptUtente}.`;
 
 
@@ -90,6 +94,12 @@ export default defineEventHandler(async (event) => {
     ]);
     // const responseText = await result.response.text();
     console.log(result.response.text());
+
+    // Salvataggio chat DB
+    let userId = session?.user.id;
+    userId = parseInt(userId, 10);
+
+    const chat = await findOrCreateChat(userId, sessionId, promptUtente, result.response.text(), fileData, filePath);
 
     return {
       statusCode: 200,

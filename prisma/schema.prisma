@@ -16,7 +16,7 @@ generator client {
 model User {
   id             Int       @id @default(autoincrement())
   name           String?
-  email          String?   @unique
+  email          String?    @unique
   credits        Int?       @default(30)
   emailVerified  DateTime?
   image          String?
@@ -25,6 +25,7 @@ model User {
   accounts       Account[]
   sessions       Session[]
   files          File[]
+  chats          Chat[]
 }
 
 model Account {
@@ -67,11 +68,38 @@ model VerificationToken {
 model File {
   id        Int @id @default(autoincrement())
   userId             Int
+  chatId             Int
   fileName           String?
   fileUrl            String
   status             String
-  analysisResult     String
   createdAt          DateTime  @default(now())
 
   user               User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  chat               Chat    @relation(fields: [chatId], references: [id], onDelete: Cascade)
+}
+
+model Chat {
+  id        Int       @id @default(autoincrement())
+  userId    Int
+  createdAt DateTime  @default(now())
+  sessionId String?
+  messages  Message[]
+  files     File[]
+
+  user      User      @relation(fields: [userId], references: [id])
+}
+
+model Message {
+  id        Int      @id @default(autoincrement())
+  content   String
+  sender    Sender   // Enum per indicare se il messaggio proviene dall'utente o dall'IA
+  timestamp DateTime @default(now())
+  chatId    Int
+
+  chat      Chat     @relation(fields: [chatId], references: [id])
+}
+
+enum Sender {
+  USER
+  AI
 }
