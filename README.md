@@ -26,25 +26,32 @@ npm run dev
 
 1. **Configurazione Iniziale**
 
-   - [v] Impostare l'ambiente di sviluppo
-   - [v] Configurare Tailwind CSS in `tailwind.config.js`
-   - [v] Configurare Nuxt.js in `nuxt.config.ts`
+   - [x] Impostare l'ambiente di sviluppo
+   - [x] Configurare Tailwind CSS in `tailwind.config.js`
+   - [x] Configurare Nuxt.js in `nuxt.config.ts`
 
 2. **Caricamento PDF**
 
-   - [v] Creare un componente per il caricamento dei PDF (`UploadPdf.vue`)
-   - [v] Implementare la logica di caricamento nel backend
+   - [x] Creare un componente per il caricamento dei PDF (`UploadPdf.vue`)
+   - [x] Implementare la logica di caricamento nel backend
 
 3. **Elaborazione con AI**
 
-   - [v] Integrare un servizio di AI per l'elaborazione dei PDF
-   - [v] Implementare la logica di estrazione del contenuto importante
+   - [x] Integrare un servizio di AI per l'elaborazione dei PDF
+   - [x] Implementare la logica di estrazione del contenuto importante
 
-4. **Evidenziazione del Contenuto**
+4. **Salvare chat nel Database e storico chat per utente**
+
+   - [x] Salvare chat nel database
+   - [x] Salvare dati del file
+   - [ ] Upload del pdf
+   - [ ] Implementare storico chat per utente
+
+5. **Evidenziazione del Contenuto**
 
    - [ ] Creare un componente per visualizzare ed evidenziare il contenuto estratto (`HighlightContent.vue`)
    - [ ] Implementare la logica di evidenziazione nel PDF
 
-5. **Interfaccia Utente**
+6. **Interfaccia Utente**
    - [ ] Progettare l'interfaccia utente per la gestione dei PDF
    - [ ] Implementare la navigazione tra le diverse sezioni dell'applicazione
