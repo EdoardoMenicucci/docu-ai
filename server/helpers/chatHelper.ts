@@ -86,3 +86,28 @@ export const findOrCreateChat = async (userId: number, sessionId: string, prompt
 
     return chat;
 };
+
+export const findChat = async (userId: number) => {
+    let chat = await prisma.chat.findMany({
+        where: { userId: userId },
+        include: {
+            messages: true,
+            files: true,
+        },
+    });
+
+    return chat;
+};
+
+export const findChatById = async (chatId: Number) => {
+    const chat = await prisma.chat.findFirst({
+        where: {
+            id: chatId as number,
+        },
+        include: {
+            messages: true,
+            files: true,
+        },
+    });
+    return chat;
+};

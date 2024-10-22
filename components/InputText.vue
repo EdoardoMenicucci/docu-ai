@@ -22,7 +22,6 @@
 </template>
 
 <script setup lang="ts">
-import { nextTick } from 'vue';
 
 const emit = defineEmits(['change', 'messageChange', 'sendMessage']);
 

@@ -6,7 +6,8 @@
         class="text-dark-gray-200 border border-dark-gray-500 rounded-md order-1 fixed left-[11rem] top-3" mode="svg"
         size="2em" @click="toggleLeftAppBar" />
       <!-- Left section -->
-      <LeftAppBar :class="{ '': leftAppBar == true }" v-if="leftAppBar == true" />
+      <LeftAppBar :class="{ '': leftAppBar == true }" v-if="leftAppBar == true" @reset="handleReset"
+        @fetchChat="allChat" :previousChat="previousChat" @chatId="fetchChat" />
       <!-- Right section -->
       <!-- 90vh overflow -->
       <div class=" max-w-[90%] mx-auto pt-5">
@@ -74,7 +75,8 @@
 </template>
 
 <script lang="ts" setup>
-import { v4 as uuidv4 } from 'uuid';
+import { startNewChatSession, resetChat } from '@/utils/chatUtils';
+
 // page meta
 definePageMeta({
   middleware: 'auth',
@@ -97,9 +99,54 @@ const leftAppBar = ref<boolean>(true);
 const sessionId = ref<string | null>(null);
 // DB CHAT
 const dbChat = ref<any[any]>([]);
+// previous chat
+const previousChat = ref<any[any]>([]);
+
+
+
+
+// Load previous chat
+const fetchChat = async (id: Number) => {
+  handleReset();
+  try {
+    const response = await fetch(`/api/chat/${id}`);
+    const res = await response.json();
+    console.log('Chat:', res.body.chat);
+    const clickedChat = res.body.chat;
+    sessionId.value = clickedChat.sessionId;
+    const messages = res.body.chat.messages;
+    messages.forEach((message: any) => {
+      chat.value.push(
+        {
+          text: message.content,
+          user: message.sender,
+          date: '10.00'
+        }
+      );
+    });
+    console.log('Chat ref:', chat.value);
+
+  } catch (error) {
+    console.error('Errore durante il fetch della chat:', error);
+  }
+}
+
+
+// fetch all previous chat
+const allChat = async () => {
+  try {
+    const response = await fetch('/api/chat');
+    const res = await response.json();
+    previousChat.value = res.body;
+    console.log('Chat:', previousChat.value);
+  } catch (error) {
+    console.error('Errore durante il fetch della chat:', error);
+  }
+}
 
 
 // types
+
 interface Chat {
   text: string;
   user: string;
@@ -109,7 +156,7 @@ interface Chat {
 // Emits
 
 const handleChange = (file: File) => {
-  reset();
+  resetChat(promptUtente, result, previousFileName, previousPrompt, chat);
   selectedFile.value = file;
   firstLoad.value = true;
   pdfUrl.value = URL.createObjectURL(file);
@@ -122,6 +169,10 @@ const handleSendMessage = (message: string) => {
   uploadFile();
 }
 
+const handleReset = () => {
+  resetChat(promptUtente, result, previousFileName, previousPrompt, chat);
+}
+
 
 // methods
 const getCurrentTime = (): string => {
@@ -132,29 +183,13 @@ const getCurrentTime = (): string => {
 const toggleLeftAppBar = () => {
   leftAppBar.value = !leftAppBar.value;
   console.log(leftAppBar.value);
-
-}
-// Funzione per iniziare una nuova sessione di chat
-const startNewChatSession = () => {
-  sessionId.value = uuidv4();
-  chat.value = [];
-  console.log('Nuova sessione di chat iniziata con sessionId:', sessionId.value);
-};
-
-
-const reset = () => {
-  promptUtente.value = "";
-  result.value = [];
-  previousFileName.value = null;
-  previousPrompt.value = null;
-  chat.value = [];
 }
 
 const uploadFile = async () => {
   console.log('File selezionato:', selectedFile.value);
 
   if (chat.value.length === 0) {
-    startNewChatSession();
+    startNewChatSession(sessionId, chat);
   }
 
   if (promptUtente.value === '') {
@@ -172,15 +207,15 @@ const uploadFile = async () => {
 
   if (!selectedFile.value) return;
 
-  if (previousFileName.value === selectedFile.value.name) {
-    console.log('Il file è lo stesso del precedente, utilizzo il prompt precedente');
-    prompt = promptUtente.value;
-    previousPrompt.value = prompt; // Aggiorno il prompt concatenato
-  } else {
-    console.log('Il file è diverso, aggiorno il nome del file e il prompt');
-    previousFileName.value = selectedFile.value.name;
-    previousPrompt.value = prompt;
-  }
+  // if (previousFileName.value === selectedFile.value.name) {
+  //   console.log('Il file è lo stesso del precedente, utilizzo il prompt precedente');
+  //   prompt = promptUtente.value;
+  //   previousPrompt.value = prompt; // Aggiorno il prompt concatenato
+  // } else {
+  //   console.log('Il file è diverso, aggiorno il nome del file e il prompt');
+  //   previousFileName.value = selectedFile.value.name;
+  //   previousPrompt.value = prompt;
+  // }
 
   const formData = new FormData();
 
@@ -210,7 +245,7 @@ const uploadFile = async () => {
 
     chat.value = [];
 
-    dbChat.value.messages.forEach((message) => {
+    dbChat.value.messages.forEach((message: any) => {
       chat.value.push(
         {
           text: message.content,
