@@ -93,7 +93,7 @@ export default defineEventHandler(async (event) => {
       { text: prompt },
     ]);
     // const responseText = await result.response.text();
-    console.log(result.response.text());
+    // console.log(result.response.text());
 
     // Salvataggio chat DB
     let userId = session?.user.id;
@@ -101,10 +101,13 @@ export default defineEventHandler(async (event) => {
 
     const chat = await findOrCreateChat(userId, sessionId, promptUtente, result.response.text(), fileData, filePath);
 
+    console.log(chat);
+
     return {
       statusCode: 200,
       body: {
-        result: result
+        result: result,
+        chat: chat,
       },
     };
   } catch (error) {

@@ -74,6 +74,14 @@ export const findOrCreateChat = async (userId: number, sessionId: string, prompt
             });
         }
 
+        // Ricarico la chat per avere i messaggi e i file aggiornati
+        chat = await prisma.chat.findFirst({
+            where: { id: chat.id },
+            include: {
+                messages: true,
+                files: true,
+            },
+        });
     }
 
     return chat;

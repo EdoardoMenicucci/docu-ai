@@ -9,7 +9,7 @@
       <LeftAppBar :class="{ '': leftAppBar == true }" v-if="leftAppBar == true" />
       <!-- Right section -->
       <!-- 90vh overflow -->
-      <div class=" mx-auto pt-5">
+      <div class=" max-w-[90%] mx-auto pt-5">
         <div class="h-[90vh] overflow-auto">
           <!-- Messaggio iniziale -->
           <div class="flex mx-5 ">
@@ -28,7 +28,7 @@
             <div class="mb-5 mx-5 mt-4 justify-end">
               <embed width="500" height="760" :src="pdfUrl" type='application/pdf'></embed>
             </div>
-            <UIcon name="material-symbols:account-circle-outline" class="text-gray-500 text-end" mode="svg" size="2em"
+            <UIcon name="material-symbols:account-circle-outline" class="text-gray-200 text-end" mode="svg" size="2em"
               v-if="firstLoad" />
           </div>
 
@@ -95,6 +95,8 @@ const isUploading = ref<boolean>(false);
 const leftAppBar = ref<boolean>(true);
 // Session Id
 const sessionId = ref<string | null>(null);
+// DB CHAT
+const dbChat = ref<any[any]>([]);
 
 
 // types
@@ -202,12 +204,28 @@ const uploadFile = async () => {
     const res = await response.json();
     isUploading.value = false;
     result.value.push(res.body.result.response.candidates[0].content.parts[0].text);
-    chat.value.push({
-      text: res.body.result.response.candidates[0].content.parts[0].text,
-      user: 'AI',
-      date: getCurrentTime()
-    }
-    )
+
+    dbChat.value = (res.body.chat)
+    console.log(res.body.chat);
+
+    chat.value = [];
+
+    dbChat.value.messages.forEach((message) => {
+      chat.value.push(
+        {
+          text: message.content,
+          user: message.sender,
+          date: '10.00'
+        }
+      );
+    });
+
+    // chat.value.push({
+    //   text: res.body.result.response.candidates[0].content.parts[0].text,
+    //   user: 'AI',
+    //   date: getCurrentTime()
+    // }
+    // )
     console.log('File caricato con successo:', result.value);
   } catch (error) {
     console.error('Errore durante l\'upload:', error);
