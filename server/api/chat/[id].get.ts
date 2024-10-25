@@ -1,6 +1,8 @@
 import { findChatById } from "~/server/helpers/chatHelper";
 import { getServerSession } from "#auth";
 
+// Return chat by id
+
 export default defineEventHandler(async (event) => {
     console.log('------GET CHAT ID------');
 

@@ -1,6 +1,7 @@
 import { getServerSession } from '#auth'
 import { findChat } from '../../helpers/chatHelper';
 
+// Return all user's chat
 
 export default defineEventHandler(async (event) => {
   console.log('------GET CHAT------');
@@ -14,7 +15,7 @@ export default defineEventHandler(async (event) => {
     }
 
     const userId = parseInt(session.user.id);
-    const chat = await findChat(userId);
+    const chat = await findChat(userId as number);
 
     return {
       statusCode: 200,

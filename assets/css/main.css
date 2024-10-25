@@ -1,9 +1,63 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
 
+/* Tailwind */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* Fonts Local*/
+/* Geist */
+@font-face {
+    font-family: 'Geist';
+    src: url('assets/fonts/Geist-Regular.woff2') format('woff2');
+    font-weight: 400;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Geist';
+    src: url('assets/fonts/Geist-Medium.woff2') format('woff2');
+    font-weight: 500;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Geist';
+    src: url('assets/fonts/Geist-Bold.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Geist';
+    src: url('assets/fonts/Geist-Thin.woff2') format('woff2');
+    font-weight: 100;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Geist';
+    src: url('assets/fonts/Geist-ExtraLight.woff2') format('woff2');
+    font-weight: 200;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Geist';
+    src: url('assets/fonts/Geist-Light.woff2') format('woff2');
+    font-weight: 300;
+    font-style: normal;
+}
+
+/* Mono */
+@font-face {
+    font-family: 'GeistMono';
+    src: url('assets/fonts/GeistMono-Regular.woff2') format('woff2');
+    font-weight: 400;
+    font-style: normal;
+}
+
+/* Variables */
 :root{
     --primary-color: #6D4C41;
     --secondary-color: #3AB795;
@@ -15,7 +69,12 @@
 
 body{
     min-height: 100vh;
-    font-family: 'Inter', sans-serif;
+    font-family: 'Geist', sans-serif;
+    font-weight: 400;
+}
+
+.mono{
+    font-family: 'GeistMono', monospace;
 }
 /* DARK MODE
 body.dark {

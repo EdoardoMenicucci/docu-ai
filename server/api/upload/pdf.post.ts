@@ -7,10 +7,6 @@ import { saveFile } from '~/server/helpers/fileHelper';
 // session
 import { getServerSession } from '#auth'
 
-import fs from 'fs/promises';
-import path from 'path';
-import os from 'os';
-
 
 export default defineEventHandler(async (event) => {
   console.log('------API------');
@@ -19,16 +15,13 @@ export default defineEventHandler(async (event) => {
 
   console.log(session);
 
-
-  const body = await readBody(event)
-  const headers = getHeaders(event)
-  // console.log(body, headers);
   try {
     const formData = await readMultipartFormData(event);
 
     if (!formData) {
       throw createError({ statusCode: 400, message: 'No form data' });
     }
+
     let fileData;
     let promptUtente;
     let sessionId;

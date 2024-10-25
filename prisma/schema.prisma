@@ -68,14 +68,14 @@ model VerificationToken {
 model File {
   id        Int @id @default(autoincrement())
   userId             Int
-  chatId             Int
+  chatId             Int?
   fileName           String?
   fileUrl            String
   status             String
   createdAt          DateTime  @default(now())
 
   user               User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  chat               Chat    @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  chat               Chat?    @relation(fields: [chatId], references: [id], onDelete: Cascade)
 }
 
 model Chat {

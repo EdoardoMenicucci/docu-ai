@@ -111,3 +111,27 @@ export const findChatById = async (chatId: Number) => {
     });
     return chat;
 };
+
+
+export const insertMessage = async (chatId: number, content: string) => {
+    const message = await prisma.message.create({
+        data: {
+            chatId: chatId,
+            content: content,
+            sender: 'USER',
+        },
+    });
+    return message;
+};
+
+export const insertAIResponse = async (chatId: number, content: string) => {
+    const message = await prisma.message.create({
+        data: {
+            chatId: chatId,
+            content: content,
+            sender: 'AI',
+        },
+    });
+    return message;
+};
+

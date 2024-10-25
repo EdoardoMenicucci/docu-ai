@@ -1,5 +1,5 @@
 <template>
-  <div class="flex items-center justify-center">
+  <div class="flex items-center justify-between bg-dark-gray-900 relative">
     <label for="file-upload" class="cursor-pointer text-dark-gray-200 hover:text-gray-100 mr-2">
       <!-- Icona per caricare file -->
       <UIcon name="material-symbols:upload" class="text-dark-gray-200" mode="svg" size="1.5em" />
@@ -8,22 +8,19 @@
 
     <textarea v-model="message" @keydown="handleKeyDown" ref="messageInput" @input="autoResize" rows="1"
       placeholder="Scrivi il tuo messaggio..."
-      class="resize-none overflow-hidden w-full p-2 border border-dark-gray-500 rounded-md focus:outline-none focus:ring-2 focus:ring-dark-gray-400"></textarea>
+      class="resize-none overflow-auto w-full max-h-[110px] p-2 bg-dark-gray-900 rounded-md focus:outline-none focus:ring-0 focus:ring-dark-gray-900"></textarea>
 
     <button @click="handleSendMessage"
-      class="ml-2 px-6 py-2 border border-dark-gray-500 text-white rounded-md hover:border-white hover:bg-dark-gray-500 transition-colors">
+      class="ml-2 px-6 py-1.5 border border-dark-gray-500 text-white rounded-md hover:border-white hover:bg-dark-gray-500 transition-colors">
       <!-- Icona per inviare il messaggio -->
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 transform rotate-90" fill="none" viewBox="0 0 24 24"
-        stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10l9-9m0 0l9 9M12 1v22" />
-      </svg>
+      <UIcon name="iconamoon:send-thin" class="text-white" mode="svg" size="1.5em" />
     </button>
   </div>
 </template>
 
 <script setup lang="ts">
 
-const emit = defineEmits(['change', 'messageChange', 'sendMessage']);
+const emit = defineEmits(['change', 'sendMessage']);
 
 const message = ref('');
 const messageInput = ref<HTMLTextAreaElement | null>(null);
