@@ -242,8 +242,8 @@ const sendMessage = async () => {
     }
 
     // recupero la chat aggiornata
-    const resp = await fetch(`/api/chat/${chatId}`);
-    res = await resp.json();
+    const secondResponse = await fetch(`/api/chat/${chatId}`);
+    res = await secondResponse.json();
 
 
     console.log(res);
