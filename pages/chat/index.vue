@@ -7,7 +7,7 @@
         size="2em" @click="toggleLeftAppBar" />
       <!-- Left section -->
       <LeftAppBar :class="{ '': leftAppBarShow == true }" v-if="leftAppBarShow == true" @reset="handleReset"
-        @fetchChat="fetchAllChat" :previousChat="previousChat" @chatId="fetchChat" />
+        @chatId="fetchChat" />
       <!-- Right section -->
       <!-- 90vh overflow -->
       <div class=" max-w-[90%] mx-auto pt-5">
@@ -99,9 +99,10 @@ const isUploading = ref<boolean>(false);
 // left bar TODO 
 const leftAppBarShow = ref<boolean>(true);
 // chat returned from the server
-const dbChat = ref<dbChat>();
-// All previous chat on sidebar
-const previousChat = ref<any[any]>([]);
+const dbChat = ref<any>();
+
+
+
 
 // types
 
@@ -111,24 +112,21 @@ interface messages {
   date: string;
 }
 
-interface dbChat {
-  id: string;
-  userId: number;
-  createdAt?: string;
-  sessionId?: string;
-  files?: { fileUrl: string }[];
-  messages?: { content: string; sender: string, date: string }[];
-}
-
-
 // Fetch previous chat
 const fetchChat = async (id: Number) => {
   handleReset();
   try {
-    const response = await fetch(`/api/chat/${id}`);
-    const res = await response.json();
-    // console.log('Chat:', res.body.chat);
-    dbChat.value = res.body.chat;
+    const data = await $fetch(`/api/chat/${id}`);
+    let messages;
+
+    // Se la risposta non restituisce un body con errore
+    if (data.body && 'chat' in data.body && data.body.chat) {
+      dbChat.value = data.body.chat;
+      messages = data.body.chat?.messages;
+    } else {
+      // Gestisci il caso di errore
+      console.error(data.statusCode);
+    }
 
     if (dbChat.value && dbChat.value?.files && dbChat.value?.files.length > 0) {
       pdfUrl.value = dbChat.value.files[0].fileUrl;
@@ -138,8 +136,7 @@ const fetchChat = async (id: Number) => {
 
     firstLoad.value = true;
 
-    const messages = res.body.chat.messages;
-    messages.forEach((message: any) => {
+    messages?.forEach((message: any) => {
       msg.value.push(
         {
           text: message.content,
@@ -148,21 +145,8 @@ const fetchChat = async (id: Number) => {
         }
       );
     });
-    console.log('Chat ref:', dbChat.value);
+    // console.log('Chat ref:', dbChat.value);
 
-  } catch (error) {
-    console.error('Errore durante il fetch della chat:', error);
-  }
-}
-
-
-// fetch all previous chat (sidebar)
-const fetchAllChat = async () => {
-  try {
-    const response = await fetch('/api/chat');
-    const res = await response.json();
-    previousChat.value = res.body;
-    console.log('Chat:', previousChat.value);
   } catch (error) {
     console.error('Errore durante il fetch della chat:', error);
   }
@@ -183,13 +167,13 @@ const handleChange = async (file: File) => {
     formData.append('sessionId', sessionId as string);
     formData.append('fileUrl', pdfUrl.value as string);
 
-    const data = await fetch('/api/chat', {
+    const data = await $fetch('/api/chat', {
       method: 'POST',
       body: formData,
     });
-    // Ritorna la chat creata con il file associato
-    const res = await data.json();
-    dbChat.value = res?.body?.chat;
+    console.log(data);
+
+    dbChat.value = data?.body?.chat;
 
   } catch (error) {
     console.error('Errore durante il fetch della chat:', error);

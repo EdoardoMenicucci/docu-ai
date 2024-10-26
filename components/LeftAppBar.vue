@@ -26,10 +26,20 @@
         </div>
       </div>
     </div>
-    <div v-if="previousChat?.chat" @click="handleChatId(chat.id)" v-for="chat in previousChat?.chat" :key="chat.id">
+    <!-- <div v-if="stato == 'success'" @click="handleChatId(chat.id)" v-for="chat in previousChat" :key="chat.id">
       <div class="flex w-full hover:bg-dark-gray-800 py-2 items-center ps-2">
         <div class="">
           {{ getShortString(chat?.messages[0]?.content || 'No Content') }}
+        </div>
+      </div>
+    </div> -->
+    <div v-if="chatLoading">
+      caricamento...
+    </div>
+    <div v-else v-for="chat in chatState.chat">
+      <div @click="handleChatId(chat.id)" class="flex w-full hover:bg-dark-gray-800 py-2 items-center ps-2">
+        <div>
+          {{ getShortString(chat.messages[0]?.content || 'No Content') }}
         </div>
       </div>
     </div>
@@ -38,11 +48,35 @@
 
 <script lang="ts" setup>
 
+// Fetch previous chat using composable w/ useState()
+const chatState = useChatState()
+const chatLoading = ref(true)
+fetchChats()
+
+// Using directly chatState.isLoading on template cause hydratation warning
+watch(
+  () => chatState.value.isLoading,
+  (newValue) => {
+    chatLoading.value = newValue
+    if (newValue) {
+      console.log('Chat is loading...')
+    } else {
+      console.log('Chat loading completed.')
+    }
+  }
+)
+
+
+
+
+// chatLoading.value = chatState.value.isLoading
+
+
+
+
+
 const emit = defineEmits(['reset', 'fetchChat', 'chatId']);
 
-defineProps({
-  previousChat: Object,
-});
 
 // Handle Emits
 const handleReset = () => {
