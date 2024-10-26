@@ -1,6 +1,3 @@
-import type { Chat } from "@prisma/client"
-
-
 export const useChatState = () => useState<any>('chatState', () => ({
   chat: [],
   isLoading: false,

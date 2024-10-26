@@ -47,11 +47,13 @@
 </template>
 
 <script lang="ts" setup>
-
+onMounted(() => {
+  fetchChats()
+})
 // Fetch previous chat using composable w/ useState()
 const chatState = useChatState()
 const chatLoading = ref(true)
-fetchChats()
+
 
 // Using directly chatState.isLoading on template cause hydratation warning
 watch(
