@@ -5,6 +5,9 @@ import path from 'path';
 //upload file to upload and return the file url
 
 export default defineEventHandler(async (event) => {
+
+  console.log('---PDF POST---');
+
   const uploadDir = path.resolve('./public/uploads');
 
   try {
@@ -41,7 +44,7 @@ export default defineEventHandler(async (event) => {
         }
       }
     }
-
+    console.log(fileUrl);
     if (!fileUrl) {
       throw createError({ statusCode: 400, message: 'No file found in form data' });
     }
@@ -50,7 +53,7 @@ export default defineEventHandler(async (event) => {
     return {
       statusCode: 200,
       body: {
-        fileUrl,
+        fileUrl: fileUrl,
       },
     };
   } catch (error) {

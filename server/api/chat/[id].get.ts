@@ -17,7 +17,7 @@ export default defineEventHandler(async (event) => {
         const chatId = parseInt(event?.context?.params?.id || '');
         const chat = await findChatById(chatId);
 
-        console.log('chat: ', chat);
+        // console.log('chat: ', chat);
 
 
         return {

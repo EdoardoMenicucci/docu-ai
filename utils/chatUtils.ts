@@ -13,8 +13,10 @@ export const resetChat = (promptUtente: Ref, msg: Ref, dbChat: Ref) => {
 }
 
 export const fileUpload = async (file: File) => {
+
+  const fileUrl = file
   const formData = new FormData();
-  formData.append('file', file);
+  formData.append('file', fileUrl);
 
   try {
     const response = await fetch('/api/file', {
@@ -27,7 +29,8 @@ export const fileUpload = async (file: File) => {
       throw new Error(`Errore durante l'upload: ${errorText}`);
     }
 
-    const res = await response.json();
+    let res = await response.json();
+    res.body.fileUrl = `${res.body.fileUrl}`
     console.log('File caricato con successo:', res);
     return res.body.fileUrl;
 

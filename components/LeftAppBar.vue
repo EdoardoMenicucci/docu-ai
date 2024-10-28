@@ -18,7 +18,7 @@
         </div>
       </div>
     </NuxtLink>
-    <div class="" @click="handleFetch">
+    <div class="" @click="fetchChats">
       <div class="flex w-full hover:bg-dark-gray-800 py-2 items-center ps-2 mb-2">
         <UIcon name="lets-icons:folder-search-duotone-line" class="text-dark-gray-200 mx-1" mode="svg" size="1.5em" />
         <div class="font-extralight">
@@ -68,14 +68,7 @@ watch(
   }
 )
 
-
-
-
 // chatLoading.value = chatState.value.isLoading
-
-
-
-
 
 const emit = defineEmits(['reset', 'fetchChat', 'chatId']);
 
@@ -85,9 +78,9 @@ const handleReset = () => {
   emit('reset');
 };
 
-const handleFetch = () => {
-  emit('fetchChat');
-};
+// const handleFetch = () => {
+//   emit('fetchChat');
+// };
 
 const handleChatId = (id: number) => {
   emit('chatId', id);

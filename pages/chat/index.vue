@@ -158,12 +158,14 @@ const handleChange = async (file: File) => {
   selectedFile.value = file;
   // Carico il file in upload
   pdfUrl.value = await fileUpload(file);
+  console.log(file);
 
   try {
     // Creo la chat
     let sessionId = startNewChatSession(msg);
 
     const formData = new FormData();
+    // let pdfLink = `public/${pdfUrl.value}`
     formData.append('sessionId', sessionId as string);
     formData.append('fileUrl', pdfUrl.value as string);
 
@@ -199,10 +201,10 @@ const toggleLeftAppBar = () => {
 }
 
 const sendMessage = async () => {
-  if (dbChat.value?.id == '' || pdfUrl.value) {
-    // TODO: spiegare di inserire un documento prima di inviare un messaggio
-    return
-  }
+  // if (dbChat.value?.id == '' || pdfUrl.value) {
+  //   // TODO: spiegare di inserire un documento prima di inviare un messaggio
+  //   return
+  // }
 
   let chatId = dbChat.value?.id;
   let prompt = promptUtente.value;
@@ -226,13 +228,13 @@ const sendMessage = async () => {
     }
 
     // recupero la chat aggiornata
-    const secondResponse = await fetch(`/api/chat/${chatId}`);
-    res = await secondResponse.json();
+    const secondResponse = await $fetch(`/api/chat/${chatId}`);
 
 
-    console.log(res);
-    dbChat.value = (res.body.chat)
-    const messages = res.body.chat.messages;
+
+    console.log(secondResponse);
+    dbChat.value = (secondResponse.body.chat)
+    const messages = secondResponse.body.chat.messages;
     msg.value = [];
     messages.forEach((message: any) => {
       msg.value.push(

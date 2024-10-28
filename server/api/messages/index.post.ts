@@ -45,6 +45,11 @@ export default defineEventHandler(async (event) => {
     let chat = await findChatById(parseInt(chatId));
 
     let file = chat?.files[0].fileUrl;
+
+    console.log(file);
+
+    let fileLink = `public/${file}`
+
     // Inizializza GoogleAIFileManager
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY ?? '');
     const fileManager = new GoogleAIFileManager(process.env.GEMINI_API_KEY ?? '');
@@ -54,11 +59,11 @@ export default defineEventHandler(async (event) => {
       2. Non inventare nulla.
       3. Rispondi in italiano, utilizzando i tag HTML per la formattazione del testo (ul, li, ol, h1, h2, p, ecc.) e per la creazione di tabelle (table, thead, tbody, tr, th, td).
       4. Applica le classi di Tailwind CSS per aggiungere stile ed enfatizzare i contenuti più importanti (il testo deve essere bianco/chiaro).
-      5. Se ci sono richieste dall'utente rispondi solamente alla richiesta.`,
+      5. Se ci sono richieste dall'utente rispondi solamente alla richiesta dell utente.`,
     });
 
     // Carica il file su Google AI
-    const uploadResponse = await fileManager.uploadFile(file as string, {
+    const uploadResponse = await fileManager.uploadFile(fileLink as string, {
       mimeType: "application/pdf",
       displayName: "Document",
     });
