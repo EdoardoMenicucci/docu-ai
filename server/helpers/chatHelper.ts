@@ -119,6 +119,7 @@ export const insertMessage = async (chatId: number, content: string) => {
             chatId: chatId,
             content: content,
             sender: 'USER',
+            // date: 
         },
     });
     return message;

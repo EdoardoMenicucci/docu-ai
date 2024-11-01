@@ -9,7 +9,7 @@ export default defineNuxtConfig({
       autoprefixer: {},
     },
   },
-  modules: ['@sidebase/nuxt-auth', '@nuxt/ui'],
+  modules: ['@sidebase/nuxt-auth', '@nuxt/ui', '@pinia/nuxt'],
   // AUTH
   auth: {
     baseURL: 'http://localhost:3000/api/auth',

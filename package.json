@@ -21,6 +21,7 @@
     "dotenv": "^16.4.5",
     "formidable": "^3.5.1",
     "nuxt": "^3.13.0",
+    "pinia": "^2.2.5",
     "uuid": "^10.0.0",
     "vue": "latest",
     "vue-router": "latest"

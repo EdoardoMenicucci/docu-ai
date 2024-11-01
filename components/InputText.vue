@@ -1,6 +1,6 @@
 <template>
-  <div class="flex items-center justify-between bg-dark-gray-900 relative">
-    <label for="file-upload" class="cursor-pointer text-dark-gray-200 hover:text-gray-100 mr-2">
+  <div class="flex items-center justify-between bg-dark-gray-900 relative  border-dark-gray-500 border rounded-xl">
+    <label for="file-upload" class="cursor-pointer text-dark-gray-200 hover:text-gray-100 mx-2">
       <!-- Icona per caricare file -->
       <UIcon name="material-symbols:upload" class="text-dark-gray-200" mode="svg" size="1.5em" />
       <input id="file-upload" type="file" accept="application/pdf" class="hidden" @change="onFileSelected" />
@@ -10,8 +10,7 @@
       placeholder="Scrivi il tuo messaggio..."
       class="resize-none overflow-auto w-full max-h-[110px] p-2 bg-dark-gray-900 rounded-md focus:outline-none focus:ring-0 focus:ring-dark-gray-900"></textarea>
 
-    <button @click="handleSendMessage"
-      class="ml-2 px-6 py-1.5 border border-dark-gray-500 text-white rounded-md hover:border-white hover:bg-dark-gray-500 transition-colors">
+    <button @click="handleSendMessage" class="ml-2 px-6 py-1.5 text-white  transition-colors ">
       <!-- Icona per inviare il messaggio -->
       <UIcon name="iconamoon:send-thin" class="text-white" mode="svg" size="1.5em" />
     </button>

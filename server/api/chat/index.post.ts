@@ -32,7 +32,7 @@ export default defineEventHandler(async (event) => {
       }
       if (data.name === 'fileUrl') {
         pdfUrl = data.data.toString();
-        console.log('message:', pdfUrl);
+        console.log('fileUrl:', pdfUrl);
       }
     }
 
@@ -51,7 +51,7 @@ export default defineEventHandler(async (event) => {
           create: {
             userId: userId,
             fileName: 'document',
-            fileUrl: pdfUrl,
+            fileUrl: pdfUrl as string,
             status: 'uploaded',
           },
         },
