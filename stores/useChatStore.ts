@@ -1,35 +1,14 @@
 import { defineStore } from 'pinia'
 import type { File } from '@prisma/client';
+import type { Chat } from '@prisma/client';
 
 
 
-// interface Chat {
-//   id: number;
-//   userId: number;
-//   sessionId: string | null;
-//   messages: Message[];
-//   files: File[];
-// }
-
-interface Chat {
-  id: number;
-  userId: number;
-  sessionId: string | null;
-  messages: {
-    text: string;
-    user: string;
-    date: string | Date;
-  }[];
-  files: {
-    id: number;
-    userId: number;
-    chatId: number | null;
-    fileName: string | null;
-    fileUrl: string;
-    status: string;
-    createdAt: Date;
-  }[];
+interface dbChat extends Chat {
+  messages: Message[];
+  files: File[];
 }
+
 
 interface Message {
   text: string;
@@ -45,11 +24,11 @@ interface ChatState {
   pdfUrl: string;
   promptUtente: string;
   messages: Message[];
-  firstLoad: boolean;
   isUploading: boolean;
   leftAppBarShow: boolean;
-  dbChat: Chat | null;
+  dbChat: dbChat | null;
   fileSet: boolean;
+  isSendingMessages: boolean
 }
 
 
@@ -61,11 +40,11 @@ export const useChatStore = defineStore({
     pdfUrl: '',
     promptUtente: '',
     messages: [],
-    firstLoad: false,
     isUploading: false,
     leftAppBarShow: true,
     dbChat: null,
-    fileSet: false
+    fileSet: false,
+    isSendingMessages: false
   }),
 
   actions: {
@@ -84,7 +63,6 @@ export const useChatStore = defineStore({
             this.pdfUrl = '';
           }
 
-          this.firstLoad = true;
 
           console.log(messages);
 
@@ -123,14 +101,14 @@ export const useChatStore = defineStore({
       } catch (error) {
         console.error('Errore durante il fetch della chat:', error);
       }
-
-      this.firstLoad = true;
     },
 
     handleSendMessage(message: string) {
       this.promptUtente = message;
       if (this.pdfUrl) {
+        this.isSendingMessages = true
         this.sendMessage();
+        this.isSendingMessages = false
       } else {
         this.fileSet = true;
       }
@@ -140,6 +118,8 @@ export const useChatStore = defineStore({
       this.promptUtente = '';
       this.messages = [];
       this.dbChat = null;
+      this.selectedFile = null;
+      this.pdfUrl = '';
     },
 
     toggleLeftAppBar() {
@@ -155,6 +135,15 @@ export const useChatStore = defineStore({
         const formData = new FormData();
         formData.append('chatId', this.dbChat.id);
         formData.append('prompt', this.promptUtente);
+
+        this.messages = [
+          ...this.messages,
+          {
+            text: this.promptUtente,
+            user: 'USER',
+            date: new Date()
+          }
+        ];
 
         const response = await fetch('/api/messages', {
           method: 'POST',
@@ -190,7 +179,7 @@ export const useChatStore = defineStore({
   },
 
   getters: {
-    isLoaded: (state) => state.firstLoad,
+    isWaitingMessage: (state) => state.isSendingMessages,
     currentMessages: (state) => state.messages,
     currentPdfUrl: (state) => state.pdfUrl
   }

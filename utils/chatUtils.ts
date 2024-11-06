@@ -1,7 +1,13 @@
+interface Message {
+  text: string;
+  user: string;
+  date: string | Date;
+}
+
 import { v4 as uuidv4 } from 'uuid';
 
-export const startNewChatSession = (msg: Ref) => {
-  msg.value = [];
+export const startNewChatSession = (msg: Message[]) => {
+  msg = [];
   let sessionId = uuidv4();
   return sessionId
 }
