@@ -53,6 +53,7 @@ export const useChatStore = defineStore({
       try {
         const data = await $fetch(`/api/chat/${id}`);
 
+
         if (data.body && 'chat' in data.body && data.body.chat) {
           this.dbChat = data.body.chat;
           const messages = data.body.chat?.messages;
@@ -78,10 +79,25 @@ export const useChatStore = defineStore({
       }
     },
 
-    async handleChange(file: File) {
+    async handleChange(file: any) {
       this.handleReset();
-      this.selectedFile = file;
-      this.pdfUrl = await fileUpload(file);
+
+      console.log(file);
+
+      const formData = new FormData();
+      formData.append('file', file);
+
+      const uploadedFile = await $fetch('/api/file/upload', {
+        method: 'POST',
+        body: formData,
+      });
+
+      console.log(uploadedFile.body);
+
+      if (!uploadedFile.body) {
+        return;
+      }
+      this.pdfUrl = uploadedFile.body;
 
       try {
         const sessionId = startNewChatSession(this.messages);

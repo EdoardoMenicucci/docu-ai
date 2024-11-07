@@ -1,5 +1,5 @@
 <template>
-  <div class="w-[20rem] bg-dark-gray-900 pt-5 flex-shrink-0 flex flex-col">
+  <div class="w-[20rem] bg-dark-gray-900 pt-5 flex-shrink-0 flex flex-col ">
     <NuxtLink to="/" class="">
       <div class="flex w-full hover:bg-dark-gray-800 py-2 items-center ps-2">
         <UIcon name="material-symbols-light:arrow-back-rounded" class="text-dark-gray-200 mx-1" mode="svg"
@@ -36,13 +36,16 @@
     <div v-if="chatLoading">
       caricamento...
     </div>
-    <div v-else v-for="chat in chatState.chat">
-      <div @click="handleChatId(chat.id)" class="flex w-full hover:bg-dark-gray-800 py-2 items-center ps-2">
-        <div>
-          {{ getShortString(chat.messages[0]?.content || 'No Content') }}
+    <div v-else class="overflow-auto">
+      <div v-for="chat in chatState.chat" class="overflow-auto">
+        <div @click="handleChatId(chat.id)" class="flex w-full hover:bg-dark-gray-800 py-2 items-center ps-2">
+          <div>
+            {{ getShortString(chat.messages[0]?.content || 'No Content') }}
+          </div>
         </div>
       </div>
     </div>
+
   </div>
 </template>
 

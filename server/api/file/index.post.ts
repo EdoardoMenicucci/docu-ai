@@ -1,9 +1,10 @@
 import { readMultipartFormData } from 'h3';
 import { promises as fs } from 'fs';
 import path from 'path';
-
+//----------------------------------------------------------------
 //upload file to upload and return the file url
-
+// THIS ROUTE IS NOT USED ANYMORE IT'S REPLACED BY THE UPLOAD ROUTE
+//----------------------------------------------------------------
 export default defineEventHandler(async (event) => {
 
   console.log('---PDF POST---');

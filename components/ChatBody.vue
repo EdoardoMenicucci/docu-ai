@@ -41,9 +41,9 @@ import { useChatStore } from '~/stores/useChatStore';
 const chatStore = useChatStore();
 
 // Gestione del file
-const handleFileChange = (event: File) => {
-  console.log(event);
-  chatStore.handleChange(event);
+const handleFileChange = (fileUrl: string) => {
+  console.log(fileUrl);
+  chatStore.handleChange(fileUrl as string);
 };
 
 const handleSendMessage = (msg: string) => {

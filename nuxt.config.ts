@@ -9,7 +9,16 @@ export default defineNuxtConfig({
       autoprefixer: {},
     },
   },
-  modules: ['@sidebase/nuxt-auth', '@nuxt/ui', '@pinia/nuxt'],
+  modules: ['@sidebase/nuxt-auth', '@nuxt/ui', '@pinia/nuxt', "@uploadthing/nuxt"],
+  //Upload thing
+  uploadthing: {
+    /**
+     * Path to your router definition file
+     * @default `~/server/uploadthing.ts`
+     */
+    routerPath: "~/server/uploadthing.ts",
+    token: process.env.UPLOADTHING_TOKEN,
+  },
   // AUTH
   auth: {
     baseURL: 'http://localhost:3000/api/auth',

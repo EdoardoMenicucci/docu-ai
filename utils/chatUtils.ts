@@ -18,7 +18,7 @@ export const resetChat = (promptUtente: Ref, msg: Ref, dbChat: Ref) => {
   dbChat.value = '';
 }
 
-export const fileUpload = async (file: File) => {
+export const fileUpload = async (file: string) => {
 
   const fileUrl = file
   const formData = new FormData();
@@ -27,7 +27,7 @@ export const fileUpload = async (file: File) => {
   try {
     const response = await fetch('/api/file', {
       method: 'POST',
-      body: formData,
+      body: fileUrl,
     });
 
     if (!response.ok) {

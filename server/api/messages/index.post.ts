@@ -3,6 +3,11 @@ import { insertMessage, findChatById, insertAIResponse } from '~/server/helpers/
 // ai
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { GoogleAIFileManager } from '@google/generative-ai/server';
+//gestione file locale
+import axios from 'axios';
+import fs from 'fs';
+import path from 'path';
+import tmp from 'tmp';
 
 // Create a new message
 
@@ -48,7 +53,18 @@ export default defineEventHandler(async (event) => {
 
     console.log(file);
 
-    let fileLink = `public/${file}`
+    if (!file) {
+      throw createError({ statusCode: 400, message: 'No file' });
+    }
+    // CREATE A LOCAL TEMPORARY FILE
+    const { data } = await axios.get(file, { responseType: 'arraybuffer' });
+
+    // Salva il file PDF temporaneamente
+    const tempDir = tmp.dirSync({ unsafeCleanup: true });
+    const tempFilePath = path.join(tempDir.name, 'temp.pdf');
+    fs.writeFileSync(tempFilePath, data);
+
+
 
     // Inizializza GoogleAIFileManager
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY ?? '');
@@ -63,7 +79,7 @@ export default defineEventHandler(async (event) => {
     });
 
     // Carica il file su Google AI
-    const uploadResponse = await fileManager.uploadFile(fileLink as string, {
+    const uploadResponse = await fileManager.uploadFile(tempFilePath as string, {
       mimeType: "application/pdf",
       displayName: "Document",
     });
@@ -84,6 +100,10 @@ export default defineEventHandler(async (event) => {
 
 
     insertAIResponse(parseInt(chatId), res);
+
+    // Rimuovi il file temporaneo
+    fs.unlinkSync(tempFilePath);
+    tempDir.removeCallback();
 
 
     return {
