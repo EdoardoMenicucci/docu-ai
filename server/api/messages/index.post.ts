@@ -1,13 +1,12 @@
 import { getServerSession } from '#auth'
 import { insertMessage, findChatById, insertAIResponse } from '~/server/helpers/chatHelper';
+import { saveFile } from '~/server/helpers/fileHelper';
 // ai
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { GoogleAIFileManager } from '@google/generative-ai/server';
 //gestione file locale
 import axios from 'axios';
-import fs from 'fs';
-import path from 'path';
-import tmp from 'tmp';
+
 
 // Create a new message
 
@@ -56,13 +55,12 @@ export default defineEventHandler(async (event) => {
     if (!file) {
       throw createError({ statusCode: 400, message: 'No file' });
     }
-    // CREATE A LOCAL TEMPORARY FILE
+
+    // CREATE A LOCAL TEMPORARY FILE ----------------------------------
     const { data } = await axios.get(file, { responseType: 'arraybuffer' });
 
     // Salva il file PDF temporaneamente
-    const tempDir = tmp.dirSync({ unsafeCleanup: true });
-    const tempFilePath = path.join(tempDir.name, 'temp.pdf');
-    fs.writeFileSync(tempFilePath, data);
+    const tempFilePath = await saveFile({ data, filename: 'temp.pdf' });
 
 
 
@@ -100,11 +98,6 @@ export default defineEventHandler(async (event) => {
 
 
     insertAIResponse(parseInt(chatId), res);
-
-    // Rimuovi il file temporaneo
-    fs.unlinkSync(tempFilePath);
-    tempDir.removeCallback();
-
 
     return {
       statusCode: 200,

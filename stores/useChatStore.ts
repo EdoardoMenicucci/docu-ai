@@ -124,7 +124,6 @@ export const useChatStore = defineStore({
       if (this.pdfUrl) {
         this.isSendingMessages = true
         this.sendMessage();
-        this.isSendingMessages = false
       } else {
         this.fileSet = true;
       }
@@ -157,7 +156,7 @@ export const useChatStore = defineStore({
           {
             text: this.promptUtente,
             user: 'USER',
-            date: new Date()
+            date: new Date().toLocaleString('it-IT', { hour: '2-digit', minute: '2-digit' })
           }
         ];
 
@@ -188,8 +187,10 @@ export const useChatStore = defineStore({
             date: timestampToDate(message.timestamp)
           })) || [];
         }
+        this.isSendingMessages = false
       } catch (error) {
         console.error('Errore durante l\'invio del messaggio:', error);
+        this.isSendingMessages = false
       }
     }
   },
