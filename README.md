@@ -44,8 +44,8 @@ npm run dev
 
    - [x] Salvare chat nel database
    - [x] Salvare dati del file
-   - [ ] Upload del pdf
-   - [ ] Implementare storico chat per utente
+   - [ ] Upload del pdf su UploadThing
+   - [x] Implementare storico chat per utente
 
 5. **Evidenziazione del Contenuto**
 
@@ -54,4 +54,4 @@ npm run dev
 
 6. **Interfaccia Utente**
    - [ ] Progettare l'interfaccia utente per la gestione dei PDF
-   - [ ] Implementare la navigazione tra le diverse sezioni dell'applicazione
+   - [x] Implementare la navigazione tra le diverse sezioni dell'applicazione
