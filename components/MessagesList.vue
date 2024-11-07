@@ -29,16 +29,7 @@ import { storeToRefs } from 'pinia';
 const chatStore = useChatStore();
 const { messages, isSendingMessages } = storeToRefs(chatStore);
 
-// Osserva i cambiamenti nei messaggi della chat e aggiorna l'UI
-watch(
-  () => messages.value,
-  () => {
-    const chatArea = document.querySelector('.chat-area');
-    if (chatArea) {
-      chatArea.scrollTop = chatArea.scrollHeight;
-    }
-  }
-);
+
 
 </script>
 

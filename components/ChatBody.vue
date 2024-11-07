@@ -1,6 +1,6 @@
 <template>
-  <div class=" max-w-[90%] mx-auto pt-5">
-    <div class="h-[90vh] overflow-auto">
+  <div class="w-[75%] mx-auto pt-5">
+    <div class="h-[90vh] overflow-auto" ref="chatContainer">
       <!-- Messaggio iniziale -->
       <div class="flex mx-5 ">
         <UIcon name="mdi:robot-outline" class="text-dark-gray-200 order-1" mode="svg" size="2em" />
@@ -40,6 +40,8 @@
 import { useChatStore } from '~/stores/useChatStore';
 const chatStore = useChatStore();
 
+const { messages } = storeToRefs(chatStore);
+
 // Gestione del file
 const handleFileChange = (fileUrl: string) => {
   console.log(fileUrl);
@@ -49,6 +51,30 @@ const handleFileChange = (fileUrl: string) => {
 const handleSendMessage = (msg: string) => {
   chatStore.handleSendMessage(msg);
 }
+
+//gestione scorrrimento chat
+const chatContainer = ref<HTMLDivElement | null>();
+
+function scrollToBottom() {
+  if (chatContainer.value) {
+    chatContainer.value.scrollTop = chatContainer.value.scrollHeight
+  }
+}
+
+// Osserva i cambiamenti nei messaggi della chat e aggiorna l'UI
+watch(
+  () => messages.value,
+  () => {
+    console.log('vorrei scrollare');
+    nextTick(() => {
+      scrollToBottom();
+    })
+  }
+);
+
+onMounted(() => {
+  scrollToBottom();
+});
 </script>
 
 <style></style>
