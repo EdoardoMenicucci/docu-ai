@@ -74,15 +74,12 @@ body{
 .mono{
     font-family: 'GeistMono', monospace;
 }
-/* DARK MODE
-body.dark {
-    --primary-color: #009dff;
-    --secondary-color: #3AB795;
-    --accent-color: #FFB84D;
-    --background-color: #333333;
-    --text-color: #F4F4F9;
-    --highlight-color: #F9E79F;
-} */
+/* DARK MODE */
+
+html{
+    scroll-behavior: smooth;
+}
+
 
 /* Webkits */
 input:-webkit-autofill {

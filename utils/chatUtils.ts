@@ -1,8 +1,4 @@
-interface Message {
-  text: string;
-  user: string;
-  date: string | Date;
-}
+import type { Message } from '../stores/useChatStore';
 
 import { v4 as uuidv4 } from 'uuid';
 
@@ -16,33 +12,6 @@ export const resetChat = (promptUtente: Ref, msg: Ref, dbChat: Ref) => {
   promptUtente.value = "";
   msg.value = [];
   dbChat.value = '';
-}
-
-export const fileUpload = async (file: string) => {
-
-  const fileUrl = file
-  const formData = new FormData();
-  formData.append('file', fileUrl);
-
-  try {
-    const response = await fetch('/api/file', {
-      method: 'POST',
-      body: fileUrl,
-    });
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(`Errore durante l'upload: ${errorText}`);
-    }
-
-    let res = await response.json();
-    res.body.fileUrl = `${res.body.fileUrl}`
-    console.log('File caricato con successo:', res);
-    return res.body.fileUrl;
-
-  } catch (error) {
-    console.error('Errore durante l\'upload:', error);
-  }
 }
 
 export const getCurrentTime = (): string => {
@@ -60,3 +29,4 @@ export const timestampToDate = (timestamp: Date) => {
 
   return formattedTime
 }
+

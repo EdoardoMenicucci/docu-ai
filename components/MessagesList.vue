@@ -18,7 +18,7 @@
     </div>
 
   </div>
-  <UProgress v-if="isSendingMessages" animation="swing" class="w-3/4 mx-auto mb-5" />
+  <UProgress v-if="isWaitingMessage" animation="swing" class="w-3/4 mx-auto mb-5" />
 </template>
 
 <script lang="ts" setup>
@@ -27,7 +27,7 @@ import { useChatStore } from '~/stores/useChatStore';
 import { storeToRefs } from 'pinia';
 
 const chatStore = useChatStore();
-const { messages, isSendingMessages } = storeToRefs(chatStore);
+const { messages, isWaitingMessage } = storeToRefs(chatStore);
 
 
 

@@ -19,16 +19,6 @@
 
 <script setup lang="ts">
 
-// const { startUpload } = useUploadThing('pdfUploader', {
-//   onClientUploadComplete(res) {
-//     console.log(`onClientUploadComplete`, res);
-//     console.log('pdf url:', res[0].url);
-//     if (res[0].url) {
-//       emit('change', res[0].url);
-//     }
-//     alert("Upload Completed");
-//   },
-// });
 
 const alert = (msg: string) => {
   window.alert(msg);
