@@ -1,26 +1,47 @@
 import { defineStore } from 'pinia'
 import type { File } from '@prisma/client';
 import type { Chat } from '@prisma/client';
+import type { Sender } from '@prisma/client';
+// import type { Message } from '@prisma/client';
 
 
+interface dbChat {
+  id: number;
+  userId: number;
+  createdAt: string;
+  sessionId: string | null;
+  messages: ChatMessage[];
+  files: FileType[];
+}
 
-interface dbChat extends Chat {
-  messages: Message[];
-  files: File[];
+interface FileType {
+  id: number;
+  chatId: number | null;
+  userId: number;
+  createdAt: string;
+  fileName: string | null;
+  fileUrl: string;
+  status: string;
 }
 
 
 interface Message {
   text: string;
-  user: string;
-  date: string | Date;
+  user: Sender;
+  date: string;
+}
+
+interface ChatMessage {
+  id: number;
+  chatId: number;
+  content: string;
+  sender: Sender;
+  timestamp: Date;
 }
 
 
-
-
 interface ChatState {
-  selectedFile: File | null;
+  selectedFile: FileType | null;
   pdfUrl: string;
   promptUtente: string;
   messages: Message[];
@@ -29,6 +50,10 @@ interface ChatState {
   dbChat: dbChat | null;
   fileSet: boolean;
   isSendingMessages: boolean
+}
+
+interface ApiResponse {
+  ok: boolean;
 }
 
 
@@ -55,7 +80,13 @@ export const useChatStore = defineStore({
 
 
         if (data.body && 'chat' in data.body && data.body.chat) {
-          this.dbChat = data.body.chat;
+          this.dbChat = {
+            ...data.body.chat,
+            messages: data.body.chat.messages.map((message: any) => ({
+              ...message,
+              timestamp: new Date(message.timestamp)
+            }))
+          };
           const messages = data.body.chat?.messages;
 
           if (this.dbChat?.files && this.dbChat.files.length > 0) {
@@ -112,7 +143,7 @@ export const useChatStore = defineStore({
         });
 
         if (data?.body?.chat) {
-          this.dbChat = data.body.chat;
+          this.dbChat = data.body.chat as dbChat;
         }
       } catch (error) {
         console.error('Errore durante il fetch della chat:', error);
@@ -148,7 +179,7 @@ export const useChatStore = defineStore({
 
       try {
         const formData = new FormData();
-        formData.append('chatId', this.dbChat.id);
+        formData.append('chatId', this.dbChat.id.toString());
         formData.append('prompt', this.promptUtente);
 
         this.messages = [
@@ -158,14 +189,14 @@ export const useChatStore = defineStore({
             user: 'USER',
             date: new Date().toLocaleString('it-IT', { hour: '2-digit', minute: '2-digit' })
           }
-        ];
+        ] as Message[];
 
         const response = await fetch('/api/messages', {
           method: 'POST',
           body: formData
         });
 
-        const res = await response.json();
+        const res: ApiResponse = await response.json();
 
         if (res.ok) {
           console.log('Messaggio inviato con successo');
@@ -176,7 +207,13 @@ export const useChatStore = defineStore({
         if (secondResponse.body && 'chat' in secondResponse.body && secondResponse.body.chat) {
 
           if (secondResponse.body.chat.sessionId) {
-            this.dbChat = secondResponse.body.chat;
+            this.dbChat = {
+              ...secondResponse.body.chat,
+              messages: secondResponse.body.chat.messages.map((message: any) => ({
+                ...message,
+                timestamp: new Date(message.timestamp)
+              }))
+            };
           }
 
           const messages = secondResponse.body.chat.messages;
@@ -185,7 +222,7 @@ export const useChatStore = defineStore({
             text: message.content,
             user: message.sender,
             date: timestampToDate(message.timestamp)
-          })) || [];
+          })) || [] as Message[];
         }
         this.isSendingMessages = false
       } catch (error) {
